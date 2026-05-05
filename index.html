@@ -102,13 +102,20 @@
     </div>
 
     <div class="report-tabs">
-        <button class="report-tab active" data-report="0">Investment Dashboard</button>
-        <button class="report-tab" data-report="1">Finanzas</button>
-        <button class="report-tab" data-report="2">Operaciones</button>
+    <button class="report-tab active" data-report="0">Tickets</button>
+    <button class="report-tab" data-report="1">Marketing</button>
+    <button class="report-tab" data-report="2">Ventas</button>
+    <button class="report-tab" data-report="3">Compras</button>
+    <button class="report-tab" data-report="4">Investment</button>
     </div>
 
     <div class="powerbi-frame">
-        <iframe
+
+    <div id="comingSoon" class="coming-soon hidden">
+        🚀 Este dashboard estará disponible próximamente
+    </div>
+
+    <iframe
         id="powerbiIframe"
         title="Informe Power BI"
         width="100%"
@@ -116,14 +123,24 @@
         src=""
         frameborder="0"
         allowfullscreen="true">
-        </iframe>
+    </iframe>
+
     </div>
 
     <div class="report-info">
-        <h3 id="reportTitle">Investment Dashboard</h3>
-        <p id="reportDescription">
-        Dashboard de inversión conectado a un pipeline en Python con métricas de cartera, dividendos, riesgo y señales de IA.
-        </p>
+    <h3 id="reportTitle">Seguimiento de Tickets de Agentes</h3>
+    <p id="reportDescription">
+        Dashboard de Power BI para el seguimiento operativo de tickets y rendimiento de agentes.
+    </p>
+    </div>
+    <div class="report-usecase fade-in">
+
+    <h4>Qué problema resuelve este dashboard</h4>
+
+    <p id="reportUseCase">
+        Este dashboard permite analizar...
+    </p>
+
     </div>
     </section>
 
@@ -273,7 +290,7 @@
 
         <div class="contact-cta">
         <a href="mailto:victorguzman.data.pro@gmail.com" class="btn btn-primary">
-            Escribirme
+            Trabajemos juntos
         </a>
         </div>
 
