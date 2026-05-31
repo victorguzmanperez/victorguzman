@@ -35,6 +35,14 @@ const reports = [
   url: "https://app.powerbi.com/view?r=eyJrIjoiNTJjZDAyOTAtNzU1YS00MjdhLTk5YjEtZGQ5ZjhhYWE5YjMyIiwidCI6IjBlOWM0ZDExLThjOWUtNDk2NS05ZjU4LTlhMjY3OTgyMjAwMiIsImMiOjl9&pageView=fitToPage"
   },
   {
+    title: "Optimización de Costes de Suministros",
+    description:
+      "Prototipo de aplicación analítica en Power BI para comparar costes actuales, simular nuevas condiciones comerciales y estimar el ahorro potencial en suministros empresariales.",
+    useCase:
+      "Permite leer y analizar facturas eléctricas, comparar la situación actual frente a una propuesta de mejora y visualizar el ahorro mensual, anual y acumulado. Es el primer módulo de una aplicación más amplia orientada a ayudar a empresas a detectar oportunidades de ahorro en distintos tipos de costes. Actualmente el prototipo está centrado en electricidad y utiliza Python para extraer información desde facturas PDF de Repsol.",
+    url: "https://app.powerbi.com/view?r=eyJrIjoiYmU2OGNmMjYtMjEwMC00NWJiLTljY2MtMzI0ODhmMTA1NTk1IiwidCI6IjBlOWM0ZDExLThjOWUtNDk2NS05ZjU4LTlhMjY3OTgyMjAwMiIsImMiOjl9&pageView=fitToPage"
+  },  
+  {
     title: "Investment Dashboard",
     description:
       "Dashboard de inversión con métricas de cartera, dividendos y riesgo.",
