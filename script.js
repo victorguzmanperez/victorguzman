@@ -3,6 +3,38 @@ const comingSoon = document.getElementById("comingSoon");
 
 const reports = [
   {
+    title: "Optimización de Costes de Suministros",
+    description:
+      "Prototipo de aplicación analítica para detectar oportunidades de ahorro en suministros empresariales mediante lectura automática de facturas, simulación de escenarios y análisis interactivo.",
+
+    useCase:
+      "Permite analizar facturas eléctricas reales, identificar oportunidades de ahorro y comparar escenarios comerciales alternativos. El sistema utiliza Python para extraer automáticamente información desde facturas PDF y Power BI para construir una experiencia interactiva orientada a negocio. Este módulo es el primer paso de una plataforma más amplia destinada a optimizar distintos costes empresariales como electricidad, telecomunicaciones, seguros, software y servicios.",
+
+    url: "https://app.powerbi.com/view?r=eyJrIjoiYmU2OGNmMjYtMjEwMC00NWJiLTljY2MtMzI0ODhmMTA1NTk1IiwidCI6IjBlOWM0ZDExLThjOWUtNDk2NS05ZjU4LTlhMjY3OTgyMjAwMiIsImMiOjl9&pageView=fitToPage"
+  },
+  {
+    title: "Análisis de Presencia Digital de Hoteles de Alicante",
+
+    description:
+      "Proyecto de analítica turística que combina Python y Power BI para evaluar la madurez digital de los hoteles de Alicante mediante indicadores de presencia web, accesibilidad, SEO y experiencia digital.",
+
+    useCase:
+      "El proyecto parte de datos turísticos oficiales y utiliza Python para automatizar la auditoría digital de cientos de establecimientos hoteleros. El proceso analiza webs corporativas, HTTPS, diseño responsive, metadatos SEO, redes sociales, plataformas de reserva, geolocalización y otros indicadores digitales para generar un scoring de madurez digital. Posteriormente, Power BI transforma estos resultados en un informe interactivo con rankings, segmentaciones geográficas, oportunidades de mejora y conclusiones asistidas por IA orientadas a la transformación digital del sector turístico.",
+
+    url: "https://app.powerbi.com/view?r=eyJrIjoiMjYwZjVhZDgtOGRjMy00NzAwLWEwZTEtZTEwNjdhZWJjYTkyIiwidCI6IjBlOWM0ZDExLThjOWUtNDk2NS05ZjU4LTlhMjY3OTgyMjAwMiIsImMiOjl9&pageView=fitToPage"
+  },
+  {
+    title: "Investment Dashboard con IA",
+
+    description:
+      "Plataforma de análisis de inversiones desarrollada en Python y Power BI para evaluar dividendos, riesgo, valoración, noticias y optimización de cartera.",
+
+    useCase:
+      "Proyecto personal de investigación financiera que integra múltiples fuentes de datos, modelos cuantitativos y automatización avanzada. Combina análisis de dividendos, valoración, calidad empresarial, noticias financieras, régimen macroeconómico y optimización de cartera para apoyar decisiones de inversión basadas en datos. Actualmente continúa en desarrollo y evolucionará hacia una plataforma integral de análisis y seguimiento de inversiones.",
+
+    url: ""
+  },
+  {
     title: "Seguimiento de Tickets de Agentes",
     description:
       "Dashboard de Power BI para el seguimiento operativo de tickets y rendimiento de agentes.",
@@ -33,23 +65,8 @@ const reports = [
   useCase:
     "Permite controlar el rendimiento de proveedores, analizar el cumplimiento de plazos, detectar desviaciones en entregas y optimizar la gestión de compras para mejorar eficiencia, costes y fiabilidad en la cadena de suministro.",
   url: "https://app.powerbi.com/view?r=eyJrIjoiNTJjZDAyOTAtNzU1YS00MjdhLTk5YjEtZGQ5ZjhhYWE5YjMyIiwidCI6IjBlOWM0ZDExLThjOWUtNDk2NS05ZjU4LTlhMjY3OTgyMjAwMiIsImMiOjl9&pageView=fitToPage"
-  },
-  {
-    title: "Optimización de Costes de Suministros",
-    description:
-      "Prototipo de aplicación analítica en Power BI para comparar costes actuales, simular nuevas condiciones comerciales y estimar el ahorro potencial en suministros empresariales.",
-    useCase:
-      "Permite leer y analizar facturas eléctricas, comparar la situación actual frente a una propuesta de mejora y visualizar el ahorro mensual, anual y acumulado. Es el primer módulo de una aplicación más amplia orientada a ayudar a empresas a detectar oportunidades de ahorro en distintos tipos de costes. Actualmente el prototipo está centrado en electricidad y utiliza Python para extraer información desde facturas PDF de Repsol.",
-    url: "https://app.powerbi.com/view?r=eyJrIjoiYmU2OGNmMjYtMjEwMC00NWJiLTljY2MtMzI0ODhmMTA1NTk1IiwidCI6IjBlOWM0ZDExLThjOWUtNDk2NS05ZjU4LTlhMjY3OTgyMjAwMiIsImMiOjl9&pageView=fitToPage"
-  },  
-  {
-    title: "Investment Dashboard",
-    description:
-      "Dashboard de inversión con métricas de cartera, dividendos y riesgo.",
-    useCase:
-      "Permite tomar decisiones de inversión basadas en datos, evaluando riesgo, rentabilidad y comportamiento histórico de los activos para optimizar la cartera.",
-    url: ""
   }
+
 ];
 
 const tabs = document.querySelectorAll(".report-tab");
