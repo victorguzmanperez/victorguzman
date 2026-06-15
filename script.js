@@ -13,15 +13,15 @@ const reports = [
     url: "https://app.powerbi.com/view?r=eyJrIjoiYmU2OGNmMjYtMjEwMC00NWJiLTljY2MtMzI0ODhmMTA1NTk1IiwidCI6IjBlOWM0ZDExLThjOWUtNDk2NS05ZjU4LTlhMjY3OTgyMjAwMiIsImMiOjl9&pageView=fitToPage"
   },
   {
-    title: "Análisis de Presencia Digital de Hoteles de Alicante",
+  title: "Auditoría de Presencia Digital de la Comunidad Valenciana",
 
-    description:
-      "Proyecto de analítica turística que combina Python y Power BI para evaluar la madurez digital de los hoteles de Alicante mediante indicadores de presencia web, accesibilidad, SEO y experiencia digital.",
+  description:
+  "Proyecto de analítica digital que combina Python, Power BI e inteligencia artificial para evaluar la madurez digital de hoteles de la Comunidad Valenciana mediante indicadores de presencia web, accesibilidad, SEO, experiencia de usuario y canales digitales.",
 
-    useCase:
-      "El proyecto parte de datos turísticos oficiales y utiliza Python para automatizar la auditoría digital de cientos de establecimientos hoteleros. El proceso analiza webs corporativas, HTTPS, diseño responsive, metadatos SEO, redes sociales, plataformas de reserva, geolocalización y otros indicadores digitales para generar un scoring de madurez digital. Posteriormente, Power BI transforma estos resultados en un informe interactivo con rankings, segmentaciones geográficas, oportunidades de mejora y conclusiones asistidas por IA orientadas a la transformación digital del sector turístico.",
+  useCase:
+  "El proyecto parte de datos oficiales del sector turístico y utiliza Python para automatizar la auditoría digital de cientos de establecimientos. El proceso analiza disponibilidad de página web, accesibilidad, HTTPS, diseño responsive, metadatos SEO, redes sociales, plataformas de reserva, Google Business y otros indicadores clave de presencia digital. Los resultados se consolidan en Power BI para generar rankings, comparativas territoriales, segmentaciones geográficas y oportunidades de mejora. El objetivo es proporcionar una visión objetiva del grado de digitalización del sector y facilitar la toma de decisiones orientadas a la transformación digital.",
 
-    url: "https://app.powerbi.com/view?r=eyJrIjoiMjYwZjVhZDgtOGRjMy00NzAwLWEwZTEtZTEwNjdhZWJjYTkyIiwidCI6IjBlOWM0ZDExLThjOWUtNDk2NS05ZjU4LTlhMjY3OTgyMjAwMiIsImMiOjl9&pageView=fitToPage"
+  url: "https://app.powerbi.com/view?r=eyJrIjoiMjYwZjVhZDgtOGRjMy00NzAwLWEwZTEtZTEwNjdhZWJjYTkyIiwidCI6IjBlOWM0ZDExLThjOWUtNDk2NS05ZjU4LTlhMjY3OTgyMjAwMiIsImMiOjl9&pageView=fitToPage"
   },
   {
     title: "Investment Dashboard con IA",
