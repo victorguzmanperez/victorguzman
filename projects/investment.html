@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Investment Dashboard con IA | Victor Guzmán</title>
-  <meta name="description" content="Proyecto personal de análisis de inversiones con Python, Power BI, IA, dividendos, riesgo y optimización de cartera." />
+  <meta name="description" content="Proyecto personal de análisis de inversiones con Python, Power BI, IA, dividendos, riesgo, noticias y optimización de cartera." />
 
   <link rel="stylesheet" href="../styles.css" />
 </head>
@@ -26,11 +26,27 @@
 <main>
 
 <section class="section project-detail-hero">
-  <p class="eyebrow">🧪 Proyecto en desarrollo</p>
+  <p class="project-badge">🧪 Proyecto en desarrollo</p>
+
   <h1>Investment Dashboard con IA</h1>
+
   <p class="hero-text">
-    Plataforma personal de análisis de inversiones desarrollada con Python y Power BI para evaluar dividendos, riesgo, valoración, noticias y optimización de cartera.
+    Plataforma personal de análisis de inversiones desarrollada con Python y Power BI para evaluar activos,
+    dividendos, riesgo, valoración, noticias financieras, régimen de mercado y optimización de cartera.
   </p>
+
+  <div class="tech-tags" style="margin-top:28px;">
+    <span>Python</span>
+    <span>Power BI</span>
+    <span>Parquet</span>
+    <span>yfinance</span>
+    <span>Pandas</span>
+    <span>DAX</span>
+    <span>IA</span>
+    <span>Backtesting</span>
+    <span>Optimización</span>
+    <span>Dividendos</span>
+  </div>
 </section>
 
 <section class="section section-alt project-detail-grid">
@@ -38,21 +54,24 @@
   <article class="card">
     <h3>Objetivo</h3>
     <p>
-      Construir una plataforma propia para analizar activos, carteras, dividendos, riesgo y señales de mercado desde una perspectiva cuantitativa y explicable.
+      Construir una plataforma propia para analizar activos financieros, carteras, dividendos, riesgo,
+      valoración y señales de mercado desde una perspectiva cuantitativa, automatizada y explicable.
     </p>
   </article>
 
   <article class="card">
     <h3>Problema resuelto</h3>
     <p>
-      La información financiera suele estar dispersa entre precios, dividendos, fundamentales, noticias y métricas de riesgo. Este proyecto busca integrarlo todo en un sistema único para apoyar decisiones de inversión basadas en datos.
+      La información financiera suele estar dispersa entre precios, dividendos, fundamentales, noticias,
+      divisas y métricas de riesgo. Este proyecto busca integrarlo todo en un sistema único de decisión.
     </p>
   </article>
 
   <article class="card">
-    <h3>Tecnologías utilizadas</h3>
+    <h3>Resultado esperado</h3>
     <p>
-      Python · Power BI · Parquet · APIs financieras · Scoring · Optimización · IA · DAX · Automatización
+      Un dashboard conectado a un pipeline Python capaz de analizar oportunidades, comparar activos,
+      construir carteras, evaluar dividendos y generar recomendaciones apoyadas en datos.
     </p>
   </article>
 
@@ -63,35 +82,260 @@
     <p class="eyebrow">Arquitectura</p>
     <h2>De datos financieros a motor de decisión</h2>
     <p>
-      El proyecto combina ingesta de datos, cálculo de métricas, scoring, optimización y visualización para construir una herramienta de análisis de inversión.
+      El proyecto combina ingesta de datos, cálculo de métricas, scoring, análisis de noticias,
+      optimización de cartera, backtesting y reporting visual.
     </p>
   </div>
 
   <div class="cards-grid">
     <article class="card">
-      <h3>1. Datos</h3>
-      <p>Precios, dividendos, fundamentales, divisas, noticias y universo de activos.</p>
+      <h3>1. Universo de activos</h3>
+      <p>
+        Construcción y ampliación del universo de inversión a partir de índices, listas de dividendos,
+        ETFs de referencia, candidatos Yahoo y reglas propias de priorización.
+      </p>
     </article>
 
     <article class="card">
-      <h3>2. Modelos</h3>
-      <p>Cálculo de rentabilidad, riesgo, dividend quality, valoración, scoring y optimización de cartera.</p>
+      <h3>2. Datos financieros</h3>
+      <p>
+        Descarga de precios, dividendos, fundamentales, divisas y benchmarks para generar una base histórica
+        completa y comparable entre activos.
+      </p>
     </article>
 
     <article class="card">
-      <h3>3. Decisión</h3>
-      <p>Power BI e IA ayudan a interpretar señales, comparar activos y priorizar oportunidades.</p>
+      <h3>3. Motor analítico</h3>
+      <p>
+        Cálculo de rentabilidad, volatilidad, drawdown, Sharpe, Sortino, calidad del dividendo,
+        valoración, riesgo y señales tácticas.
+      </p>
     </article>
   </div>
 </section>
 
 <section class="section section-alt">
   <div class="section-heading">
-    <p class="eyebrow">Estado</p>
-    <h2>Proyecto en desarrollo</h2>
+    <p class="eyebrow">Pipeline Python</p>
+    <h2>Qué hace el sistema por detrás</h2>
     <p>
-      Este dashboard todavía no está publicado. El objetivo es evolucionarlo hacia una plataforma completa de análisis, seguimiento y optimización de inversiones.
+      El dashboard no parte de un Excel manual. Detrás hay un pipeline modular que genera datasets,
+      valida la calidad de los datos y prepara capas analíticas para Power BI e IA.
     </p>
+  </div>
+
+  <div class="project-detail-grid">
+    <article class="card">
+      <h3>Universo y gobierno</h3>
+      <p>
+        Descubre candidatos desde índices, ETFs, listas dividend/income y Yahoo Finance.
+        Después aplica reglas de limpieza, validación y priorización antes de incorporarlos al universo operativo.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Métricas y valoración</h3>
+      <p>
+        Calcula retornos, volatilidad, drawdowns, ratios de riesgo, métricas de dividendos,
+        valoración relativa y calidad empresarial.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Noticias y contexto</h3>
+      <p>
+        Ingiere noticias financieras, eventos macro, comunicados oficiales y fuentes de mercado para construir
+        contexto por activo, sentimiento e impacto potencial.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-heading">
+    <p class="eyebrow">IA aplicada</p>
+    <h2>Modelos de decisión y señales inteligentes</h2>
+    <p>
+      La capa de IA busca convertir métricas financieras y contexto de mercado en señales interpretables
+      para apoyar decisiones de inversión.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <article class="card">
+      <h3>AI Decision Engine</h3>
+      <p>
+        Motor de decisión para puntuar activos combinando métricas cuantitativas, calidad, riesgo,
+        valoración, momentum y contexto financiero.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>AI Tactical Opportunity</h3>
+      <p>
+        Detección de oportunidades tácticas a partir de señales de mercado, eventos, noticias,
+        caídas de precio, valoración y probabilidad de recuperación.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Market Intelligence</h3>
+      <p>
+        Generación de informes de inteligencia de mercado para interpretar qué está ocurriendo,
+        qué activos se ven afectados y qué conviene vigilar.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-heading">
+    <p class="eyebrow">Dividendos</p>
+    <h2>Enfoque en inversión de largo plazo e ingresos</h2>
+    <p>
+      Una parte importante del proyecto está orientada a construir carteras de dividendos sostenibles,
+      diversificadas y con control de riesgo.
+    </p>
+  </div>
+
+  <div class="project-detail-grid">
+    <article class="card">
+      <h3>Dividend Quality</h3>
+      <p>
+        Evalúa historial, estabilidad, crecimiento, payout, sostenibilidad y riesgo de dividend trap.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Calendario de ingresos</h3>
+      <p>
+        Construye un calendario de dividendos para estimar ingresos mensuales y detectar meses débiles.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Optimización income</h3>
+      <p>
+        Optimiza carteras buscando equilibrio entre rentabilidad por dividendo, calidad, diversificación,
+        frecuencia de pagos y estabilidad.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-heading">
+    <p class="eyebrow">Backtesting</p>
+    <h2>Validación antes de decidir</h2>
+    <p>
+      El sistema incorpora pruebas históricas para comparar estrategias, medir drawdowns, rentabilidad,
+      volatilidad y comportamiento en distintos entornos de mercado.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <article class="card">
+      <h3>Backtest de cartera</h3>
+      <p>
+        Evalúa el comportamiento histórico de combinaciones de activos y compara resultados frente a benchmarks.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Rebalanceo</h3>
+      <p>
+        Simula carteras con rebalanceo periódico para analizar impacto en retorno, riesgo y estabilidad.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Plan actual vs objetivo</h3>
+      <p>
+        Compara la cartera actual frente a una asignación objetivo y genera planes de inversión progresivos.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-heading">
+    <p class="eyebrow">Informe interactivo</p>
+    <h2>Dashboard Power BI</h2>
+  </div>
+
+<div class="powerbi-frame">
+
+    <div class="coming-soon show">
+        🚀 Este dashboard estará disponible próximamente
+    </div>
+
+</div>
+</section>
+
+<section class="section">
+  <div class="section-heading">
+    <p class="eyebrow">Roadmap</p>
+    <h2>Próximos pasos</h2>
+    <p>
+      El proyecto seguirá evolucionando hacia una plataforma integral de análisis, seguimiento y apoyo a la decisión inversora.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <article class="card">
+      <h3>Dashboard Power BI</h3>
+      <p>
+        Publicar una primera versión visual con cartera, métricas, dividendos, riesgo, ranking de activos y señales de IA.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Motor de aprendizaje</h3>
+      <p>
+        Guardar snapshots históricos de decisiones, resultados y señales para mejorar los modelos con el tiempo.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Asistente de cartera</h3>
+      <p>
+        Evolucionar hacia un asesor analítico que explique oportunidades, riesgos, cambios sugeridos y escenarios posibles.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-heading">
+    <p class="eyebrow">Valor diferencial</p>
+    <h2>Por qué este proyecto es relevante</h2>
+    <p>
+      Este proyecto combina ingeniería de datos, análisis financiero, IA, automatización, reporting y criterio inversor.
+      No es solo un dashboard: es un sistema de investigación financiera construido paso a paso.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <article class="card">
+      <h3>End-to-end</h3>
+      <p>
+        Cubre desde la ingesta de datos hasta la generación de informes, rankings, señales y planes de inversión.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Explicable</h3>
+      <p>
+        Busca que cada métrica, score o recomendación pueda entenderse y revisarse, evitando una caja negra.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Personal y escalable</h3>
+      <p>
+        Nace como proyecto personal, pero con arquitectura modular para seguir incorporando fuentes, modelos y casos de uso.
+      </p>
+    </article>
   </div>
 </section>
 
