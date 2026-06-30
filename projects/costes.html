@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Business Cost Intelligence | Victor Guzmán</title>
+  <meta name="description" content="Caso de estudio de optimización de costes de suministros con Python, Power BI y lectura automática de facturas PDF." />
+
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+
+<body>
+
+<header class="site-header">
+  <div class="logo">
+    <span class="logo-mark">VG</span>
+    <span class="logo-text">Victor Guzmán</span>
+  </div>
+
+  <nav class="nav">
+    <a href="../index.html#inicio">Inicio</a>
+  </nav>
+</header>
+
+<main>
+
+<section class="section project-detail-hero">
+  <p class="project-badge">🚀 Proyecto personal</p>
+  
+  <h1>Business Cost Intelligence</h1>
+
+  <p class="hero-text">
+    Plataforma analítica para optimizar costes recurrentes de empresa mediante lectura automática de facturas,
+    simulación de nuevas condiciones comerciales y visualización interactiva en Power BI.
+  </p>
+
+  <div class="tech-tags" style="margin-top:28px;">
+    <span>Python</span>
+    <span>Power BI</span>
+    <span>Power Query</span>
+    <span>DAX</span>
+    <span>pdfplumber</span>
+    <span>Regex</span>
+    <span>Pandas</span>
+    <span>Automatización</span>
+  </div>
+</section>
+
+<section class="section section-alt project-detail-grid">
+
+  <article class="card">
+    <h3>Objetivo</h3>
+    <p>
+      Convertir facturas eléctricas en información estructurada para analizar costes, detectar oportunidades de ahorro
+      y comparar el escenario actual frente a una propuesta de mejora.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Problema resuelto</h3>
+    <p>
+      Muchas empresas pagan suministros sin una visión clara de qué conceptos pesan más, si sus condiciones son competitivas
+      o cuánto podrían ahorrar cambiando tarifa, proveedor o condiciones comerciales.
+    </p>
+  </article>
+
+  <article class="card">
+    <h3>Resultado</h3>
+    <p>
+      Una aplicación analítica que lee facturas PDF, extrae datos clave, calcula escenarios alternativos y presenta el ahorro
+      potencial de forma visual, clara e interactiva.
+    </p>
+  </article>
+
+</section>
+
+<section class="section">
+  <div class="section-heading">
+    <p class="eyebrow">Arquitectura</p>
+    <h2>De factura PDF a decisión de negocio</h2>
+    <p>
+      El proyecto no parte de un Excel manual. El flujo automatiza la extracción de información desde facturas PDF,
+      la transforma en datos analizables y la convierte en un informe interactivo orientado a decisiones.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <article class="card">
+      <h3>1. Lectura de facturas</h3>
+      <p>
+        Python recorre una carpeta de facturas PDF, identifica el proveedor y extrae el texto completo de cada documento.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>2. Extracción automática</h3>
+      <p>
+        El motor extrae número de factura, CUPS, periodo, consumo, potencia, energía, impuestos, IVA, peajes y otros conceptos.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>3. Modelo analítico</h3>
+      <p>
+        Power Query normaliza los datos y Power BI construye un modelo para comparar situación actual, propuesta y ahorro.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-heading">
+    <p class="eyebrow">Automatización con Python</p>
+    <h2>Qué hace el motor por detrás</h2>
+    <p>
+      El script utiliza patrones por comercializadora para detectar y extraer información de la factura. Actualmente trabaja
+      con facturas de Repsol y está preparado para ampliarse a otros proveedores mediante nuevas reglas de extracción.
+    </p>
+  </div>
+
+  <div class="project-detail-grid">
+    <article class="card">
+      <h3>Datos de factura</h3>
+      <p>
+        Número de factura, fechas, periodo facturado, contrato, CUPS, comercializadora, distribuidora y estado de extracción.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Consumo y potencia</h3>
+      <p>
+        Consumo total, consumo por tramos, potencia contratada, potencia máxima demandada y días facturados.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Conceptos económicos</h3>
+      <p>
+        Total factura, término fijo, energía, impuestos, IVA, alquiler de contador, bono social, peajes y cuota de comercialización.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-heading">
+    <p class="eyebrow">Detalle de factura</p>
+    <h2>No solo resume: reconstruye el desglose</h2>
+    <p>
+      Además del resumen general, el sistema genera una tabla de detalle por bloques de factura:
+      energía, término fijo, impuestos, peajes, otros conceptos y total de control.
+      Esto permite auditar el cálculo y preparar futuras simulaciones más precisas.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <article class="card">
+      <h3>Energía</h3>
+      <p>
+        Extrae importes, kWh, precio unitario y tramos de consumo para analizar el coste real de la energía consumida.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Impuestos y cargos</h3>
+      <p>
+        Separa IVA, impuesto eléctrico, peajes, cargos y otros conceptos para entender el peso de cada bloque.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Trazabilidad</h3>
+      <p>
+        Conserva fórmulas y texto de origen para poder verificar de dónde sale cada dato extraído.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-heading">
+    <p class="eyebrow">Simulación</p>
+    <h2>Comparativa de ahorro</h2>
+    <p>
+      Una vez estructurada la factura, el informe permite comparar el coste actual frente a una nueva propuesta comercial,
+      recalcular conceptos y estimar ahorro mensual, anual y acumulado.
+    </p>
+  </div>
+
+  <div class="project-detail-grid">
+    <article class="card">
+      <h3>Situación actual</h3>
+      <p>
+        Visualiza factura actual, consumo, coste medio por kWh, periodo analizado, evolución mensual y desglose de conceptos.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Propuesta de mejora</h3>
+      <p>
+        Aplica nuevas condiciones comerciales, recalcula el coste propuesto y muestra reducción, ahorro total e impacto anual.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Insight ejecutivo</h3>
+      <p>
+        El informe incorpora una lectura ejecutiva que resume los principales resultados y ayuda a interpretar la oportunidad de ahorro.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-heading">
+    <p class="eyebrow">Producto en evolución</p>
+    <h2>Próximos pasos</h2>
+    <p>
+      Este módulo eléctrico es el primer paso de una plataforma más amplia de optimización de costes empresariales.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <article class="card">
+      <h3>Más suministros</h3>
+      <p>
+        Incorporar telefonía, seguros, software, servicios recurrentes y compras.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Más proveedores</h3>
+      <p>
+        Ampliar el motor de lectura a nuevas comercializadoras y formatos de factura.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Más inteligencia</h3>
+      <p>
+        Añadir recomendaciones automáticas, alertas de anomalías y comparativas históricas.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="section-heading">
+    <p class="eyebrow">Informe interactivo</p>
+    <h2>Dashboard Power BI</h2>
+    <p>
+      Explora el prototipo interactivo publicado en Power BI Service.
+    </p>
+  </div>
+
+  <div class="powerbi-frame">
+    <iframe
+      title="Optimización de Costes de Suministros"
+      width="100%"
+      height="650"
+      src="https://app.powerbi.com/view?r=eyJrIjoiYmU2OGNmMjYtMjEwMC00NWJiLTljY2MtMzI0ODhmMTA1NTk1IiwidCI6IjBlOWM0ZDExLThjOWUtNDk2NS05ZjU4LTlhMjY3OTgyMjAwMiIsImMiOjl9&pageView=fitToPage"
+      frameborder="0"
+      allowfullscreen="true">
+    </iframe>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-heading">
+    <p class="eyebrow">Valor diferencial</p>
+    <h2>Por qué este proyecto es relevante</h2>
+    <p>
+      Este caso combina automatización, ingeniería de datos, visualización y enfoque de negocio. No es solo un dashboard:
+      es una solución que convierte documentos complejos en decisiones concretas.
+    </p>
+  </div>
+
+  <div class="cards-grid">
+    <article class="card">
+      <h3>Automatiza trabajo manual</h3>
+      <p>
+        Reduce el tiempo dedicado a revisar facturas y evita copiar datos manualmente.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Mejora la negociación</h3>
+      <p>
+        Permite conocer el coste real y comparar propuestas comerciales con datos.
+      </p>
+    </article>
+
+    <article class="card">
+      <h3>Escalable</h3>
+      <p>
+        La arquitectura puede extenderse a nuevos costes, proveedores y escenarios de análisis.
+      </p>
+    </article>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <p>© 2026 Victor Guzmán · Power BI, IA y Data Analytics</p>
+</footer>
+
+</body>
+</html>

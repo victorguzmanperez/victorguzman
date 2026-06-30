@@ -1,6 +1,8 @@
 const useCase = document.getElementById("reportUseCase");
 const comingSoon = document.getElementById("comingSoon");
 
+let currentReportIndex = 0;
+
 const reports = [
   {
     title: "Optimización de Costes de Suministros",
@@ -75,9 +77,12 @@ const title = document.getElementById("reportTitle");
 const description = document.getElementById("reportDescription");
 
 function loadReport(index) {
+
   const report = reports[index];
 
   if (!report) return;
+  currentReportIndex = index;
+
 
   title.textContent = report.title;
   description.textContent = report.description;
@@ -113,6 +118,20 @@ tabs.forEach((tab) => {
   });
 });
 
+const projectLinks = document.querySelectorAll(".project-link");
+
+projectLinks.forEach((button) => {
+  button.addEventListener("click", () => {
+    const reportIndex = Number(button.dataset.report);
+    loadReport(reportIndex);
+
+    document.getElementById("powerbi").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  });
+});
+
 loadReport(0);
 
 const elements = document.querySelectorAll(".fade-in");
@@ -129,3 +148,20 @@ const observer = new IntersectionObserver(
 );
 
 elements.forEach((el) => observer.observe(el));
+
+document.addEventListener("fullscreenchange", () => {
+  const report = reports[currentReportIndex];
+
+  if (!document.fullscreenElement && report && report.url) {
+    const currentUrl = report.url;
+
+    iframe.style.visibility = "hidden";
+    iframe.src = "";
+
+    setTimeout(() => {
+      iframe.src = currentUrl;
+      iframe.style.visibility = "visible";
+    }, 150);
+  }
+});
+
