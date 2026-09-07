@@ -1,23 +1,162 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6DLSS21PER"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-    gtag('config', 'G-6DLSS21PER');
+
+  <!-- SEO -->
+
+  <title>
+    Investment Dashboard con IA: Python y Power BI | Víctor Guzmán
+  </title>
+
+  <meta
+    name="description"
+    content="Proyecto personal en desarrollo para analizar inversiones con Python, Power BI e IA: dividendos, riesgo, valoración, noticias, backtesting y optimización de cartera."
+  />
+
+  <meta
+    name="author"
+    content="Víctor Guzmán"
+  />
+
+  <meta
+    name="robots"
+    content="index, follow"
+  />
+
+  <link
+    rel="canonical"
+    href="https://victorguzmanperez.github.io/victorguzman/projects/investment.html"
+  />
+
+
+  <!-- Open Graph -->
+
+  <meta
+    property="og:title"
+    content="Investment Dashboard con IA: Python y Power BI | Víctor Guzmán"
+  />
+
+  <meta
+    property="og:description"
+    content="Proyecto de investigación financiera que combina Python, Power BI, datos de mercado, dividendos, riesgo, valoración, backtesting e inteligencia artificial."
+  />
+
+  <meta
+    property="og:type"
+    content="article"
+  />
+
+  <meta
+    property="og:url"
+    content="https://victorguzmanperez.github.io/victorguzman/projects/investment.html"
+  />
+
+  <meta
+    property="og:locale"
+    content="es_ES"
+  />
+
+  <meta
+    property="og:site_name"
+    content="Víctor Guzmán"
+  />
+
+  <meta
+    property="og:image"
+    content="https://victorguzmanperez.github.io/victorguzman/assets/img/og-cover.png"
+  />
+
+  <meta
+    property="og:image:width"
+    content="1200"
+  />
+
+  <meta
+    property="og:image:height"
+    content="630"
+  />
+
+  <meta
+    property="og:image:alt"
+    content="Víctor Guzmán · Datos, BI, Automatización e IA"
+  />
+
+  <!-- Twitter / X -->
+
+  <meta
+    name="twitter:card"
+    content="summary_large_image"
+  />
+
+  <meta
+    name="twitter:title"
+    content="Investment Dashboard con IA: Python y Power BI | Víctor Guzmán"
+  />
+
+  <meta
+    name="twitter:description"
+    content="Proyecto personal de análisis financiero con Python, Power BI, dividendos, riesgo, backtesting e inteligencia artificial."
+  />
+
+  <meta
+    name="twitter:image"
+    content="https://victorguzmanperez.github.io/victorguzman/assets/img/og-cover.png"
+  />
+
+  <meta
+    name="twitter:image:alt"
+    content="Víctor Guzmán · Datos, BI, Automatización e IA"
+  />
+
+<!-- Structured Data: Project -->
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "@id": "https://victorguzmanperez.github.io/victorguzman/projects/investment.html#project",
+    "url": "https://victorguzmanperez.github.io/victorguzman/projects/investment.html",
+    "name": "Investment Dashboard con IA",
+    "description": "Proyecto personal en desarrollo de investigación y análisis financiero que combina Python, Power BI e inteligencia artificial para estudiar activos, dividendos, riesgo, valoración, noticias, backtesting y optimización de cartera.",
+    "inLanguage": "es",
+    "creator": {
+      "@id": "https://victorguzmanperez.github.io/victorguzman/#person"
+    },
+    "isPartOf": {
+      "@id": "https://victorguzmanperez.github.io/victorguzman/#website"
+    },
+    "keywords": [
+      "Python",
+      "Power BI",
+      "Pandas",
+      "Parquet",
+      "yfinance",
+      "DAX",
+      "Inteligencia artificial",
+      "Análisis financiero",
+      "Dividendos",
+      "Riesgo",
+      "Valoración",
+      "Noticias financieras",
+      "Backtesting",
+      "Optimización de cartera"
+    ]
+  }
   </script>
 
-  <title>Investment Dashboard con IA | Victor Guzmán</title>
-  <meta name="description" content="Proyecto personal de análisis de inversiones con Python, Power BI, IA, dividendos, riesgo, noticias y optimización de cartera." />
+  <link
+    rel="stylesheet"
+    href="../styles.css"
+  />
 
-  <link rel="stylesheet" href="../styles.css" />
 </head>
 
 <body>
@@ -30,7 +169,14 @@
 
   <nav class="nav">
     <a href="../index.html#inicio">Inicio</a>
+    <a href="../soluciones.html">Soluciones</a>
+    <a href="../index.html#powerbi">Power BI</a>
+    <a href="../index.html#servicios">Servicios</a>
+    <a href="../index.html#sobre-mi">Sobre mí</a>
+    <a href="../index.html#contacto">Contacto</a>
+    <a href="../diagnostico.html">Diagnóstico</a>
   </nav>
+  
 </header>
 
 <main>
@@ -80,8 +226,9 @@
   <article class="card">
     <h3>Resultado esperado</h3>
     <p>
-      Un dashboard conectado a un pipeline Python capaz de analizar oportunidades, comparar activos,
-      construir carteras, evaluar dividendos y generar recomendaciones apoyadas en datos.
+      Un dashboard conectado a un pipeline Python capaz de analizar oportunidades,
+      comparar activos, construir carteras, evaluar dividendos y generar señales
+      analíticas apoyadas en datos.
     </p>
   </article>
 
@@ -307,9 +454,11 @@
     </article>
 
     <article class="card">
-      <h3>Asistente de cartera</h3>
+      <h3>Asistente de análisis de cartera</h3>
       <p>
-        Evolucionar hacia un asesor analítico que explique oportunidades, riesgos, cambios sugeridos y escenarios posibles.
+        Evolucionar hacia un asistente analítico que explique oportunidades,
+        riesgos, señales detectadas y escenarios posibles para apoyar
+        el análisis y la toma de decisiones.
       </p>
     </article>
   </div>
@@ -348,12 +497,127 @@
     </article>
   </div>
 </section>
+<!-- =====================================================
+     APOYO AL PROYECTO
+===================================================== -->
 
+<section class="section section-alt">
+
+  <div class="section-heading">
+
+    <p class="eyebrow">
+      ¿Te ha resultado útil?
+    </p>
+
+    <h2>
+      Apoya nuevos proyectos y contenidos
+    </h2>
+
+    <p>
+      Este proyecto forma parte de un portfolio que desarrollo y comparto
+      de forma abierta. Si quieres ayudarme a seguir investigando,
+      construyendo y publicando nuevos casos prácticos, puedes realizar
+      una aportación voluntaria.
+    </p>
+
+    <a
+      href="../apoya.html?source=project_investment"
+      class="btn btn-primary"
+    >
+      Apoya el proyecto
+    </a>
+
+  </div>
+
+</section>
 </main>
 
 <footer class="footer">
-  <p>© 2026 Victor Guzmán · Power BI, IA y Data Analytics</p>
+
+  <p>
+    © 2026 Víctor Guzmán · Datos, BI, Automatización e IA
+  </p>
+
+  <nav class="footer-legal" aria-label="Enlaces del pie">
+
+    <a href="../apoya.html">Apoya el proyecto</a>
+
+    <span aria-hidden="true">·</span>
+
+    <a href="../privacidad.html">Privacidad</a>
+
+    <span aria-hidden="true">·</span>
+
+    <a href="../cookies.html">Cookies</a>
+
+    <span aria-hidden="true">·</span>
+
+    <button
+      type="button"
+      class="footer-cookie-button"
+      onclick="openCookiePreferences()"
+    >
+      Configurar cookies
+    </button>
+
+  </nav>
+
 </footer>
 
+<div
+  id="cookieBanner"
+  class="cookie-banner"
+  role="dialog"
+  aria-modal="false"
+  aria-labelledby="cookieTitle"
+  aria-describedby="cookieDescription"
+>
+
+  <div class="cookie-banner-content">
+
+    <div class="cookie-banner-text">
+
+      <strong id="cookieTitle">
+        Cookies de analítica
+      </strong>
+
+      <p id="cookieDescription">
+        Utilizo Google Analytics para conocer de forma estadística
+        cómo se utiliza este portfolio y poder mejorarlo.
+        Analytics solo se cargará si aceptas.
+        Puedes cambiar tu decisión en cualquier momento.
+      </p>
+
+      <a href="../cookies.html">
+        Política de cookies
+      </a>
+
+    </div>
+
+    <div class="cookie-banner-actions">
+
+      <button
+        type="button"
+        id="rejectAnalytics"
+        class="btn cookie-btn"
+      >
+        Rechazar
+      </button>
+
+      <button
+        type="button"
+        id="acceptAnalytics"
+        class="btn btn-primary cookie-btn"
+      >
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script src="../cookie-consent.js"></script>
 </body>
 </html>
