@@ -181,11 +181,9 @@
       <div class="cards-grid">
 
         <article class="card">
-          <h3>Reunión de 30 minutos</h3>
+          <h3>Reunión opcional de 30 minutos</h3>
           <p>
-            Una conversación inicial para entender el proceso,
-            las personas implicadas, las herramientas utilizadas
-            y el resultado que necesitas conseguir.
+            Si quieres comentar el caso directamente conmigo, podrás reservar una reunión inicial de 30 minutos en uno de los horarios disponibles.
           </p>
         </article>
 
@@ -588,6 +586,50 @@
 
     </section>
 
+    <!-- =====================================================
+         RESERVA DE REUNIÓN
+    ===================================================== -->
+
+    <section
+      id="bookingSection"
+      class="section section-alt"
+      hidden
+    >
+
+      <div class="form-wrapper">
+
+        <div class="section-heading">
+
+          <p class="eyebrow">
+            Solicitud recibida
+          </p>
+
+          <h2>
+            ¿Quieres comentarlo conmigo?
+          </h2>
+
+          <p>
+            Ya tengo la información de tu caso. Si quieres comentarlo
+            directamente conmigo, puedes reservar una reunión inicial
+            de 30 minutos en uno de los horarios disponibles.
+          </p>
+
+        </div>
+
+        <div
+          id="calendlyEmbed"
+          style="min-width:320px; height:720px;"
+        ></div>
+
+        <p class="form-note">
+          La reserva se añadirá automáticamente al calendario y recibirás
+          por correo el enlace de Google Meet para la reunión.
+        </p>
+
+      </div>
+
+    </section>    
+
     <section class="section section-alt">
 
       <div class="section-heading">
@@ -680,11 +722,116 @@
     const formStatus =
       document.getElementById("formStatus");
 
+    const bookingSection =
+      document.getElementById("bookingSection");
+
+    const calendlyEmbed =
+      document.getElementById("calendlyEmbed");
+
+    const nameInput =
+      document.getElementById("name");
+
+    const emailInput =
+      document.getElementById("email");
+
+function showCalendlyBooking(name, email) {
+
+  bookingSection.hidden = false;
+
+  const initializeCalendly = () => {
+
+    if (
+      typeof Calendly === "undefined" ||
+      calendlyEmbed.dataset.initialized === "true"
+    ) {
+      return;
+    }
+
+    Calendly.initInlineWidget({
+      url: "https://calendly.com/victorguzman-data-pro/reunion-inicial-proyecto",
+      parentElement: calendlyEmbed,
+      prefill: {
+        name: name,
+        email: email
+      }
+    });
+
+    calendlyEmbed.dataset.initialized = "true";
+
+    bookingSection.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+  };
+
+  if (!document.getElementById("calendlyStyles")) {
+
+    const calendlyStyles =
+      document.createElement("link");
+
+    calendlyStyles.id = "calendlyStyles";
+    calendlyStyles.rel = "stylesheet";
+    calendlyStyles.href =
+      "https://assets.calendly.com/assets/external/widget.css";
+
+    document.head.appendChild(calendlyStyles);
+
+  }
+
+  if (typeof Calendly !== "undefined") {
+
+    initializeCalendly();
+    return;
+
+  }
+
+  let calendlyScript =
+    document.getElementById("calendlyScript");
+
+  if (!calendlyScript) {
+
+    calendlyScript =
+      document.createElement("script");
+
+    calendlyScript.id = "calendlyScript";
+    calendlyScript.src =
+      "https://assets.calendly.com/assets/external/widget.js";
+
+    calendlyScript.async = true;
+
+    calendlyScript.addEventListener(
+      "load",
+      initializeCalendly,
+      { once: true }
+    );
+
+    document.body.appendChild(calendlyScript);
+
+  } else {
+
+    calendlyScript.addEventListener(
+      "load",
+      initializeCalendly,
+      { once: true }
+    );
+
+  }
+
+}
+
+
     diagnosticForm.addEventListener(
       "submit",
       async (event) => {
 
         event.preventDefault();
+
+        const bookingName =
+          nameInput.value.trim();
+
+        const bookingEmail =
+          emailInput.value.trim();
 
         const selectedImprovements =
           diagnosticForm.querySelectorAll(
@@ -731,10 +878,15 @@
           diagnosticForm.reset();
 
           formStatus.textContent =
-            "Solicitud enviada correctamente. Me pondré en contacto contigo para revisar el caso.";
+            "Solicitud enviada correctamente. Si quieres, puedes reservar ahora una reunión inicial de 30 minutos.";
 
           formStatus.className =
             "form-status success";
+
+          showCalendlyBooking(
+            bookingName,
+            bookingEmail
+          );
 
           if (typeof gtag === "function") {
 
