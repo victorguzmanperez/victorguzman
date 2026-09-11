@@ -626,6 +626,43 @@
           por correo el enlace de Google Meet para la reunión.
         </p>
 
+        <div
+          class="booking-alternative"
+          aria-labelledby="bookingAlternativeTitle"
+        >
+
+          <p class="booking-alternative-eyebrow">
+            Otra opción
+          </p>
+
+          <h3 id="bookingAlternativeTitle">
+            ¿No encuentras un horario que te encaje?
+          </h3>
+
+          <p class="booking-alternative-text">
+            No pasa nada. Ya he recibido la información de tu caso.
+            Si ninguno de los horarios disponibles te viene bien,
+            indícamelo y buscaré contigo otra alternativa.
+          </p>
+
+          <button
+            type="button"
+            id="bookingAlternativeButton"
+            class="btn booking-alternative-button"
+          >
+            No encuentro un horario
+          </button>
+
+          <p
+            id="bookingAlternativeStatus"
+            class="form-status booking-alternative-status"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></p>
+
+        </div>
+
       </div>
 
     </section>    
@@ -734,6 +771,20 @@
     const emailInput =
       document.getElementById("email");
 
+    const bookingAlternativeButton =
+      document.getElementById(
+        "bookingAlternativeButton"
+      );
+
+    const bookingAlternativeStatus =
+      document.getElementById(
+        "bookingAlternativeStatus"
+      );
+
+let submittedLead = null;
+let bookingAlternativeTracked = false;
+
+
 function showCalendlyBooking(name, email) {
 
   bookingSection.hidden = false;
@@ -817,6 +868,62 @@ function showCalendlyBooking(name, email) {
     );
 
   }
+
+}
+
+function resetBookingFlow() {
+
+  /*
+   * Cerrar y limpiar Calendly.
+   */
+  bookingSection.hidden = true;
+
+  calendlyEmbed.innerHTML = "";
+
+  delete calendlyEmbed.dataset.initialized;
+
+
+  /*
+   * Restablecer alternativa de horario.
+   */
+  bookingAlternativeButton.hidden = false;
+  bookingAlternativeButton.disabled = false;
+
+  bookingAlternativeButton.textContent =
+    "No encuentro un horario";
+
+  bookingAlternativeStatus.hidden = true;
+  bookingAlternativeStatus.textContent = "";
+  bookingAlternativeStatus.className =
+    "form-status booking-alternative-status";
+
+
+  /*
+   * Restablecer datos temporales del lead.
+   */
+  submittedLead = null;
+
+  bookingAlternativeTracked = false;
+
+  trackedCalendlyEvents.clear();
+
+
+  /*
+   * Formulario limpio.
+   */
+  diagnosticForm.reset();
+
+  formStatus.textContent = "";
+  formStatus.className = "form-status";
+
+
+  /*
+   * Volver al inicio del formulario.
+   */
+  diagnosticForm.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
 
 }
 
@@ -951,6 +1058,11 @@ window.addEventListener(
             );
           }
 
+          submittedLead = {
+            name: bookingName,
+            email: bookingEmail
+          };
+
           diagnosticForm.reset();
 
           formStatus.textContent =
@@ -998,6 +1110,139 @@ window.addEventListener(
 
       }
     );
+
+    bookingAlternativeButton.addEventListener(
+      "click",
+      async () => {
+
+        if (!submittedLead) {
+          return;
+        }
+
+        bookingAlternativeButton.disabled = true;
+
+        bookingAlternativeButton.textContent =
+          "Enviando…";
+
+        bookingAlternativeStatus.hidden = true;
+
+        /*
+        * Analytics
+        * Sin PII.
+        */
+        if (
+          !bookingAlternativeTracked &&
+          typeof gtag === "function"
+        ) {
+
+          gtag(
+            "event",
+            "booking_alternative_click",
+            {
+              booking_source:
+                "diagnostico"
+            }
+          );
+
+          bookingAlternativeTracked = true;
+
+        }
+
+        /*
+        * Aviso operativo a Víctor.
+        * Se reutiliza Formspree.
+        */
+        const alternativeRequest =
+          new FormData();
+
+        alternativeRequest.append(
+          "nombre",
+          submittedLead.name
+        );
+
+        alternativeRequest.append(
+          "email",
+          submittedLead.email
+        );
+
+        alternativeRequest.append(
+          "tipo_solicitud",
+          "Necesita horario alternativo"
+        );
+
+        alternativeRequest.append(
+          "_subject",
+          "Lead del portfolio necesita otro horario"
+        );
+
+        try {
+
+          const response =
+            await fetch(
+              diagnosticForm.action,
+              {
+                method: "POST",
+                body: alternativeRequest,
+                headers: {
+                  Accept: "application/json"
+                }
+              }
+            );
+
+          if (!response.ok) {
+            throw new Error(
+              "No se pudo registrar la solicitud."
+            );
+          }
+
+          bookingAlternativeButton.textContent =
+            "Enviado ✓";
+
+          setTimeout(
+            () => {
+
+              bookingAlternativeStatus.hidden = false;
+
+              bookingAlternativeStatus.textContent =
+                "Perfecto. Ya tengo tu solicitud. Me pondré en contacto contigo para buscar otro horario.";
+
+              bookingAlternativeStatus.className =
+                "form-status success";
+
+              setTimeout(
+                () => {
+                  resetBookingFlow();
+                },
+                1500
+              );
+
+            },
+            1200
+          );
+
+        } catch (error) {
+
+          console.error(error);
+
+          bookingAlternativeButton.disabled = false;
+
+          bookingAlternativeButton.textContent =
+            "No encuentro un horario";
+
+          bookingAlternativeStatus.hidden = false;
+
+          bookingAlternativeStatus.textContent =
+            "No he podido registrar esta petición. Ya tengo tu solicitud de diagnóstico y puedes escribirme directamente si lo necesitas.";
+
+          bookingAlternativeStatus.className =
+            "form-status error";
+
+        }
+
+      }
+    );
+
+
 
   </script>
 
