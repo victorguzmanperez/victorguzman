@@ -820,6 +820,82 @@ function showCalendlyBooking(name, email) {
 
 }
 
+function isCalendlyEvent(event) {
+
+  return (
+    typeof event.data?.event === "string" &&
+    event.data.event.startsWith("calendly.")
+  );
+
+}
+
+const trackedCalendlyEvents =
+  new Set();
+
+
+window.addEventListener(
+  "message",
+  (event) => {
+
+    if (!isCalendlyEvent(event)) {
+      return;
+    }
+
+    const calendlyEventMap = {
+      "calendly.event_type_viewed":
+        "calendly_view",
+
+      "calendly.date_and_time_selected":
+        "calendly_time_selected",
+
+      "calendly.event_scheduled":
+        "calendly_event_scheduled"
+    };
+
+    const gaEventName =
+      calendlyEventMap[event.data.event];
+
+    if (!gaEventName) {
+      return;
+    }
+
+    if (
+      trackedCalendlyEvents.has(
+        gaEventName
+      )
+    ) {
+      return;
+    }
+
+    trackedCalendlyEvents.add(
+      gaEventName
+    );
+
+    console.log(
+      "[Calendly → GA4]",
+      gaEventName,
+      {
+        booking_source:
+          "diagnostico"
+      }
+    );
+
+    if (typeof gtag === "function") {
+
+      gtag(
+        "event",
+        gaEventName,
+        {
+          booking_source:
+            "diagnostico"
+        }
+      );
+
+    }
+
+  }
+);
+
 
     diagnosticForm.addEventListener(
       "submit",
