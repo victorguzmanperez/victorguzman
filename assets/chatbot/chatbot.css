@@ -1,0 +1,1896 @@
+/**
+ * ============================================================
+ * Asistente de Víctor
+ * HITO I0.5 — Launcher + avatar base
+ * ============================================================
+ */
+
+:root {
+  --vg-chatbot-launcher-size: 64px;
+  --vg-chatbot-launcher-size-mobile: 56px;
+
+  --vg-chatbot-launcher-offset-x: 24px;
+  --vg-chatbot-launcher-offset-y: 24px;
+
+  --vg-chatbot-launcher-offset-mobile: 16px;
+
+  --vg-chatbot-ink:
+    var(--color-ink, #123047);
+
+  --vg-chatbot-accent:
+    var(--color-accent, #20a4a6);
+
+  --vg-chatbot-white:
+    #ffffff;
+
+  --vg-chatbot-online:
+    #22c55e;
+
+  --vg-chatbot-focus:
+    #0ea5e9;
+
+  --vg-chatbot-shadow:
+    0 12px 32px rgb(15 23 42 / 24%);
+
+  --vg-chatbot-shadow-hover:
+    0 16px 40px rgb(15 23 42 / 32%);
+
+  --vg-chatbot-z-launcher:
+    9990;
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * Launcher
+ * ------------------------------------------------------------
+ */
+
+.vg-chatbot-launcher {
+  position: fixed;
+
+  right:
+    calc(
+      var(--vg-chatbot-launcher-offset-x) +
+      env(safe-area-inset-right, 0px)
+    );
+
+  bottom:
+    calc(
+      var(--vg-chatbot-launcher-offset-y) +
+      env(safe-area-inset-bottom, 0px)
+    );
+
+  z-index:
+    var(--vg-chatbot-z-launcher);
+
+  width:
+    var(--vg-chatbot-launcher-size);
+
+  height:
+    var(--vg-chatbot-launcher-size);
+
+  margin: 0;
+  padding: 0;
+
+  border:
+    2px solid
+    rgb(255 255 255 / 88%);
+
+  border-radius: 50%;
+
+  background:
+    var(--vg-chatbot-ink);
+
+  box-shadow:
+    var(--vg-chatbot-shadow);
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  isolation: isolate;
+
+  display: grid;
+  place-items: center;
+
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+
+.vg-chatbot-launcher:hover {
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    var(--vg-chatbot-shadow-hover);
+}
+
+
+.vg-chatbot-launcher:active {
+  transform:
+    translateY(0)
+    scale(0.97);
+}
+
+
+.vg-chatbot-launcher:focus {
+  outline: none;
+}
+
+
+.vg-chatbot-launcher:focus-visible {
+  outline:
+    3px solid
+    var(--vg-chatbot-focus);
+
+  outline-offset: 4px;
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * Avatar
+ * ------------------------------------------------------------
+ */
+
+.vg-chatbot-avatar {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--vg-chatbot-ink),
+      var(--vg-chatbot-accent)
+    );
+
+  transform-origin:
+    50% 85%;
+}
+
+
+.vg-chatbot-avatar__image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  border-radius: inherit;
+
+  user-select: none;
+  pointer-events: none;
+
+  transform:
+    translateZ(0);
+}
+
+
+/**
+ * Fallback si el webp no puede cargarse.
+ *
+ * El botón continúa siendo reconocible y usable.
+ */
+.vg-chatbot-avatar[
+  data-avatar-image-failed="true"
+]
+.vg-chatbot-avatar__image {
+  display: none;
+}
+
+
+.vg-chatbot-avatar[
+  data-avatar-image-failed="true"
+]::after {
+  content:
+    attr(data-avatar-fallback-label);
+
+  display: grid;
+  place-items: center;
+
+  width: 100%;
+  height: 100%;
+
+  font:
+    700 18px/1
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  letter-spacing:
+    0.04em;
+
+  color:
+    var(--vg-chatbot-white);
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * Estado online
+ * ------------------------------------------------------------
+ */
+
+.vg-chatbot-launcher__status {
+  position: absolute;
+
+  right: 1px;
+  bottom: 2px;
+
+  width: 14px;
+  height: 14px;
+
+  border:
+    3px solid
+    var(--vg-chatbot-white);
+
+  border-radius: 50%;
+
+  background:
+    var(--vg-chatbot-online);
+
+  box-sizing:
+    border-box;
+
+  pointer-events: none;
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * Tooltip
+ * ------------------------------------------------------------
+ */
+
+.vg-chatbot-launcher__tooltip {
+  position: absolute;
+
+  right:
+    calc(100% + 12px);
+
+  top: 50%;
+
+  transform:
+    translate(
+      4px,
+      -50%
+    );
+
+  max-width: 220px;
+
+  padding:
+    8px 11px;
+
+  border-radius:
+    8px;
+
+  background:
+    var(--vg-chatbot-ink);
+
+  color:
+    var(--vg-chatbot-white);
+
+  box-shadow:
+    0 8px 24px
+    rgb(15 23 42 / 18%);
+
+  font:
+    600 13px/1.3
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  white-space: nowrap;
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease,
+    visibility 140ms ease;
+}
+
+
+.vg-chatbot-launcher:hover
+.vg-chatbot-launcher__tooltip,
+.vg-chatbot-launcher:focus-visible
+.vg-chatbot-launcher__tooltip {
+  opacity: 1;
+  visibility: visible;
+
+  transform:
+    translate(
+      0,
+      -50%
+    );
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * Estado IDLE
+ * ------------------------------------------------------------
+ */
+
+.vg-chatbot-avatar[
+  data-avatar-state="idle"
+] {
+  animation:
+    vg-chatbot-avatar-breathe
+    4.8s
+    ease-in-out
+    infinite;
+}
+
+
+@keyframes
+vg-chatbot-avatar-breathe {
+  0%,
+  100% {
+    transform:
+      translateY(0)
+      scale(1);
+  }
+
+  50% {
+    transform:
+      translateY(-1px)
+      scale(1.008);
+  }
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * HOVER
+ *
+ * No necesitamos modificar state.js para un simple hover.
+ * Es un detalle visual local de UI.
+ * ------------------------------------------------------------
+ */
+
+.vg-chatbot-launcher:hover
+.vg-chatbot-avatar {
+  filter:
+    saturate(1.03)
+    brightness(1.02);
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * THINKING
+ *
+ * Mientras no exista thinking.webp,
+ * utilizamos el default + tratamiento CSS.
+ * ------------------------------------------------------------
+ */
+
+.vg-chatbot-avatar[
+  data-avatar-state="thinking"
+] {
+  animation:
+    vg-chatbot-avatar-thinking
+    1.6s
+    ease-in-out
+    infinite;
+}
+
+
+@keyframes
+vg-chatbot-avatar-thinking {
+  0%,
+  100% {
+    transform:
+      scale(1);
+  }
+
+  50% {
+    transform:
+      scale(0.975);
+  }
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * SPEAKING
+ *
+ * El intercambio de frames llegará cuando existan
+ * speaking-1.webp y speaking-2.webp.
+ * Por ahora dejamos una reacción visual mínima.
+ * ------------------------------------------------------------
+ */
+
+.vg-chatbot-avatar[
+  data-avatar-state="speaking"
+] {
+  animation:
+    vg-chatbot-avatar-speaking
+    900ms
+    ease-in-out
+    infinite;
+}
+
+
+@keyframes
+vg-chatbot-avatar-speaking {
+  0%,
+  100% {
+    transform:
+      translateY(0);
+  }
+
+  50% {
+    transform:
+      translateY(-1px);
+  }
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * NOTIFICATION
+ * ------------------------------------------------------------
+ */
+
+.vg-chatbot-avatar[
+  data-avatar-state="notification"
+] {
+  animation:
+    vg-chatbot-avatar-notification
+    650ms
+    ease-out
+    1;
+}
+
+
+@keyframes
+vg-chatbot-avatar-notification {
+  0% {
+    transform:
+      scale(1);
+  }
+
+  45% {
+    transform:
+      scale(1.055);
+  }
+
+  100% {
+    transform:
+      scale(1);
+  }
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * Expanded
+ * ------------------------------------------------------------
+ */
+
+.vg-chatbot-launcher[
+  data-expanded="true"
+] {
+  border-color:
+    color-mix(
+      in srgb,
+      var(--vg-chatbot-accent) 70%,
+      white
+    );
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * Mobile
+ * ------------------------------------------------------------
+ */
+
+@media
+(max-width: 640px) {
+
+  .vg-chatbot-launcher {
+    width:
+      var(
+        --vg-chatbot-launcher-size-mobile
+      );
+
+    height:
+      var(
+        --vg-chatbot-launcher-size-mobile
+      );
+
+    right:
+      calc(
+        var(--vg-chatbot-launcher-offset-mobile) +
+        env(safe-area-inset-right, 0px)
+      );
+
+    bottom:
+      calc(
+        var(--vg-chatbot-launcher-offset-mobile) +
+        env(safe-area-inset-bottom, 0px)
+      );
+  }
+
+
+  .vg-chatbot-launcher__status {
+    width: 13px;
+    height: 13px;
+
+    right: 0;
+    bottom: 1px;
+  }
+
+
+  /**
+   * En pantallas táctiles pequeñas evitamos
+   * depender del tooltip visual.
+   * El aria-label sigue disponible.
+   */
+  .vg-chatbot-launcher__tooltip {
+    display: none;
+  }
+}
+
+
+/**
+ * ------------------------------------------------------------
+ * Reduced motion
+ * ------------------------------------------------------------
+ */
+
+@media
+(prefers-reduced-motion: reduce) {
+
+  .vg-chatbot-launcher,
+  .vg-chatbot-launcher__tooltip,
+  .vg-chatbot-avatar,
+  .vg-chatbot-avatar__image {
+    animation: none !important;
+
+    transition: none !important;
+
+    transform: none !important;
+
+    scroll-behavior: auto !important;
+  }
+
+
+  .vg-chatbot-launcher:hover {
+    transform:
+      none;
+  }
+}
+
+
+/**
+ * También podemos forzarlo desde JS
+ * cuando el controller detecta matchMedia.
+ */
+
+.vg-chatbot-avatar[
+  data-reduced-motion="true"
+] {
+  animation:
+    none !important;
+
+  transition:
+    none !important;
+
+  transform:
+    none !important;
+}
+
+/**
+ * ============================================================
+ * HITO I0.7 — CHAT PANEL
+ * ============================================================
+ */
+
+:root {
+  --vg-chatbot-panel-width:
+    390px;
+
+  --vg-chatbot-panel-height:
+    min(620px, calc(100vh - 150px));
+
+  --vg-chatbot-panel-radius:
+    20px;
+
+  --vg-chatbot-panel-gap:
+    16px;
+
+  --vg-chatbot-panel-bg:
+    #ffffff;
+
+  --vg-chatbot-panel-border:
+    rgb(15 23 42 / 10%);
+
+  --vg-chatbot-panel-muted:
+    #64748b;
+
+  --vg-chatbot-panel-soft:
+    #f6f8fb;
+}
+
+
+/**
+ * Accessibility helper
+ */
+
+.vg-chatbot-sr-only {
+  position: absolute !important;
+
+  width: 1px !important;
+  height: 1px !important;
+
+  padding: 0 !important;
+  margin: -1px !important;
+
+  overflow: hidden !important;
+
+  clip:
+    rect(0, 0, 0, 0) !important;
+
+  white-space: nowrap !important;
+
+  border: 0 !important;
+}
+
+
+/**
+ * PANEL
+ */
+
+.vg-chatbot-panel {
+  position: fixed;
+
+  right:
+    calc(
+      var(--vg-chatbot-launcher-offset-x) +
+      env(safe-area-inset-right, 0px)
+    );
+
+  bottom:
+    calc(
+      var(--vg-chatbot-launcher-offset-y) +
+      var(--vg-chatbot-launcher-size) +
+      var(--vg-chatbot-panel-gap) +
+      env(safe-area-inset-bottom, 0px)
+    );
+
+  z-index:
+    calc(
+      var(--vg-chatbot-z-launcher) - 1
+    );
+
+  width:
+    min(
+      var(--vg-chatbot-panel-width),
+      calc(100vw - 32px)
+    );
+
+  height:
+    var(--vg-chatbot-panel-height);
+
+  min-height:
+    420px;
+
+  display:
+    grid;
+
+  grid-template-rows:
+    auto 1fr auto;
+
+  overflow: hidden;
+
+  border:
+    1px solid
+    var(--vg-chatbot-panel-border);
+
+  border-radius:
+    var(--vg-chatbot-panel-radius);
+
+  background:
+    var(--vg-chatbot-panel-bg);
+
+  box-shadow:
+    0 24px 70px
+    rgb(15 23 42 / 22%);
+
+  opacity: 0;
+
+  transform:
+    translateY(12px)
+    scale(0.985);
+
+  transform-origin:
+    calc(100% - 32px)
+    100%;
+
+  pointer-events: none;
+
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+
+.vg-chatbot-panel[
+  data-open="true"
+] {
+  opacity: 1;
+
+  transform:
+    translateY(0)
+    scale(1);
+
+  pointer-events: auto;
+}
+
+
+/**
+ * HEADER
+ */
+
+.vg-chatbot-panel__header {
+  min-height:
+    74px;
+
+  padding:
+    14px 14px 14px 16px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    space-between;
+
+  gap:
+    12px;
+
+  border-bottom:
+    1px solid
+    rgb(15 23 42 / 8%);
+
+  background:
+    rgb(255 255 255 / 96%);
+
+  backdrop-filter:
+    blur(14px);
+}
+
+
+.vg-chatbot-panel__identity {
+  min-width: 0;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    11px;
+}
+
+
+.vg-chatbot-panel__avatar {
+  flex:
+    0 0 auto;
+
+  width: 44px;
+  height: 44px;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      var(--vg-chatbot-ink),
+      var(--vg-chatbot-accent)
+    );
+
+  box-shadow:
+    0 4px 12px
+    rgb(15 23 42 / 16%);
+}
+
+
+.vg-chatbot-panel__avatar-image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  border-radius:
+    inherit;
+
+  user-select: none;
+
+  pointer-events: none;
+}
+
+
+.vg-chatbot-panel__identity-text {
+  min-width: 0;
+}
+
+
+.vg-chatbot-panel__title {
+  margin: 0;
+
+  overflow: hidden;
+
+  font:
+    700 15px/1.25
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color:
+    var(--vg-chatbot-ink);
+
+  white-space:
+    nowrap;
+
+  text-overflow:
+    ellipsis;
+}
+
+
+.vg-chatbot-panel__status {
+  margin-top: 4px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    6px;
+
+  font:
+    500 12px/1.2
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color:
+    var(--vg-chatbot-panel-muted);
+}
+
+
+.vg-chatbot-panel__status-dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background:
+    var(--vg-chatbot-online);
+
+  box-shadow:
+    0 0 0 3px
+    rgb(34 197 94 / 12%);
+}
+
+
+.vg-chatbot-panel__header-actions {
+  flex:
+    0 0 auto;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    4px;
+}
+
+
+/**
+ * RESET / CLOSE
+ */
+
+.vg-chatbot-panel__reset,
+.vg-chatbot-panel__close {
+  flex:
+    0 0 auto;
+
+  width: 38px;
+  height: 38px;
+
+  padding: 0;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border: 0;
+
+  border-radius:
+    10px;
+
+  background:
+    transparent;
+
+  color:
+    #475569;
+
+  cursor: pointer;
+
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+
+.vg-chatbot-panel__reset {
+  font:
+    600 24px/1
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+.vg-chatbot-panel__reset:hover,
+.vg-chatbot-panel__close:hover {
+  background:
+    #f1f5f9;
+
+  color:
+    var(--vg-chatbot-ink);
+}
+
+
+.vg-chatbot-panel__reset:focus-visible,
+.vg-chatbot-panel__close:focus-visible {
+  outline:
+    3px solid
+    var(--vg-chatbot-focus);
+
+  outline-offset:
+    2px;
+}
+
+
+.vg-chatbot-panel__close svg {
+  width: 20px;
+  height: 20px;
+
+  fill: none;
+
+  stroke:
+    currentColor;
+
+  stroke-width: 2;
+
+  stroke-linecap:
+    round;
+}
+
+
+/**
+ * RESET CONFIRMATION
+ */
+
+.vg-chatbot-reset-confirmation {
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 8;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  padding:
+    24px;
+
+  background:
+    rgb(15 23 42 / 38%);
+
+  backdrop-filter:
+    blur(2px);
+}
+
+
+.vg-chatbot-reset-confirmation[hidden] {
+  display: none;
+}
+
+
+.vg-chatbot-reset-confirmation__card {
+  width: 100%;
+
+  max-width:
+    320px;
+
+  padding:
+    20px;
+
+  border:
+    1px solid
+    var(--vg-chatbot-panel-border);
+
+  border-radius:
+    16px;
+
+  background:
+    var(--vg-chatbot-white);
+
+  box-shadow:
+    0 18px 50px
+    rgb(15 23 42 / 22%);
+}
+
+
+.vg-chatbot-reset-confirmation__title {
+  margin:
+    0;
+
+  color:
+    var(--vg-chatbot-ink);
+
+  font:
+    700 16px/1.35
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+.vg-chatbot-reset-confirmation__copy {
+  margin:
+    9px 0 0;
+
+  color:
+    var(--vg-chatbot-panel-muted);
+
+  font:
+    400 13px/1.5
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+
+.vg-chatbot-reset-confirmation__actions {
+  margin-top:
+    18px;
+
+  display:
+    flex;
+
+  justify-content:
+    flex-end;
+
+  gap:
+    8px;
+}
+
+
+.vg-chatbot-reset-confirmation__button {
+  min-height:
+    38px;
+
+  padding:
+    8px 12px;
+
+  border-radius:
+    10px;
+
+  font:
+    700 12px/1.2
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  cursor:
+    pointer;
+}
+
+
+.vg-chatbot-reset-confirmation__button--secondary {
+  border:
+    1px solid
+    var(--vg-chatbot-panel-border);
+
+  background:
+    var(--vg-chatbot-white);
+
+  color:
+    var(--vg-chatbot-ink);
+}
+
+
+.vg-chatbot-reset-confirmation__button--primary {
+  border:
+    1px solid
+    var(--vg-chatbot-ink);
+
+  background:
+    var(--vg-chatbot-ink);
+
+  color:
+    var(--vg-chatbot-white);
+}
+
+
+.vg-chatbot-reset-confirmation__button:focus-visible {
+  outline:
+    3px solid
+    var(--vg-chatbot-focus);
+
+  outline-offset:
+    2px;
+}
+
+
+/**
+ * MESSAGE AREA
+ */
+
+.vg-chatbot-messages {
+  min-height: 0;
+
+  overflow-y: auto;
+
+  overscroll-behavior:
+    contain;
+
+  padding:
+    22px 18px;
+
+  scrollbar-width:
+    thin;
+
+  scrollbar-color:
+    rgb(100 116 139 / 36%)
+    transparent;
+}
+
+
+.vg-chatbot-messages::-webkit-scrollbar {
+  width: 7px;
+}
+
+
+.vg-chatbot-messages::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+
+  background:
+    rgb(100 116 139 / 30%);
+}
+
+
+/**
+ * CONVERSATION MESSAGES
+ */
+
+.vg-chatbot-message {
+  width: 100%;
+
+  display: flex;
+
+  margin:
+    0 0 10px;
+}
+
+
+.vg-chatbot-message--user {
+  justify-content:
+    flex-end;
+}
+
+
+.vg-chatbot-message--assistant,
+.vg-chatbot-message--system {
+  justify-content:
+    flex-start;
+}
+
+
+.vg-chatbot-message__bubble {
+  max-width:
+    84%;
+
+  margin:
+    0;
+
+  padding:
+    10px 12px;
+
+  border-radius:
+    15px;
+
+  font:
+    400 14px/1.5
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  overflow-wrap:
+    anywhere;
+
+  white-space:
+    pre-wrap;
+}
+
+
+.vg-chatbot-message--assistant
+.vg-chatbot-message__bubble {
+  border:
+    1px solid
+    rgb(15 23 42 / 8%);
+
+  border-bottom-left-radius:
+    5px;
+
+  background:
+    var(--vg-chatbot-panel-soft);
+
+  color:
+    var(--vg-chatbot-ink);
+}
+
+
+.vg-chatbot-message--user
+.vg-chatbot-message__bubble {
+  border-bottom-right-radius:
+    5px;
+
+  background:
+    var(--vg-chatbot-ink);
+
+  color:
+    var(--vg-chatbot-white);
+}
+
+
+.vg-chatbot-message--system
+.vg-chatbot-message__bubble {
+  max-width:
+    100%;
+
+  background:
+    transparent;
+
+  color:
+    var(--vg-chatbot-panel-muted);
+
+  font-size:
+    12px;
+}
+
+
+/**
+ * EMPTY STATE
+ */
+
+.vg-chatbot-empty-state {
+  min-height:
+    100%;
+
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  justify-content:
+    center;
+
+  align-items:
+    flex-start;
+
+  padding:
+    16px 8px 26px;
+}
+
+
+.vg-chatbot-empty-state__eyebrow {
+  margin-bottom:
+    12px;
+
+  font:
+    700 10px/1.3
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  letter-spacing:
+    0.12em;
+
+  color:
+    #c58c00;
+}
+
+
+.vg-chatbot-empty-state__title {
+  margin:
+    0 0 10px;
+
+  font:
+    750 24px/1.15
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  letter-spacing:
+    -0.025em;
+
+  color:
+    var(--vg-chatbot-ink);
+}
+
+
+.vg-chatbot-empty-state__copy {
+  max-width:
+    310px;
+
+  margin: 0;
+
+  font:
+    400 14px/1.55
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color:
+    var(--vg-chatbot-panel-muted);
+}
+
+
+/**
+ * COMPOSER
+ */
+
+.vg-chatbot-composer {
+  padding:
+    12px 14px 13px;
+
+  border-top:
+    1px solid
+    rgb(15 23 42 / 8%);
+
+  background:
+    #ffffff;
+}
+
+
+.vg-chatbot-composer__field {
+  position:
+    relative;
+
+  display:
+    flex;
+
+  align-items:
+    flex-end;
+
+  gap:
+    8px;
+
+  padding:
+    7px 7px 7px 12px;
+
+  border:
+    1px solid
+    rgb(100 116 139 / 26%);
+
+  border-radius:
+    15px;
+
+  background:
+    #ffffff;
+
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+
+.vg-chatbot-composer__field:focus-within {
+  border-color:
+    rgb(32 164 166 / 70%);
+
+  box-shadow:
+    0 0 0 3px
+    rgb(32 164 166 / 10%);
+}
+
+
+.vg-chatbot-composer__input {
+  flex: 1;
+
+  min-width: 0;
+
+  min-height:
+    36px;
+
+  max-height:
+    120px;
+
+  padding:
+    8px 0;
+
+  resize: none;
+
+  overflow-y: auto;
+
+  border: 0;
+
+  outline: none;
+
+  background:
+    transparent;
+
+  font:
+    400 14px/1.4
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color:
+    var(--vg-chatbot-ink);
+}
+
+
+.vg-chatbot-composer__input::placeholder {
+  color:
+    #94a3b8;
+}
+
+
+.vg-chatbot-composer__submit {
+  flex:
+    0 0 auto;
+
+  width: 38px;
+  height: 38px;
+
+  padding: 0;
+
+  display:
+    grid;
+
+  place-items:
+    center;
+
+  border: 0;
+
+  border-radius:
+    11px;
+
+  background:
+    var(--vg-chatbot-ink);
+
+  color:
+    #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease,
+    background-color 140ms ease;
+}
+
+
+.vg-chatbot-composer__submit:hover:not(:disabled) {
+  background:
+    #0d2639;
+
+  transform:
+    translateY(-1px);
+}
+
+
+.vg-chatbot-composer__submit:disabled {
+  opacity: 0.3;
+
+  cursor:
+    default;
+}
+
+
+.vg-chatbot-composer__submit:focus-visible {
+  outline:
+    3px solid
+    var(--vg-chatbot-focus);
+
+  outline-offset:
+    2px;
+}
+
+
+.vg-chatbot-composer__submit svg {
+  width: 18px;
+  height: 18px;
+
+  fill: none;
+
+  stroke:
+    currentColor;
+
+  stroke-width: 1.8;
+
+  stroke-linecap:
+    round;
+
+  stroke-linejoin:
+    round;
+}
+
+
+.vg-chatbot-composer__note {
+  margin:
+    7px 4px 0;
+
+  font:
+    400 10px/1.3
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color:
+    #94a3b8;
+}
+
+
+/**
+ * ============================================================
+ * MOBILE
+ * ============================================================
+ */
+
+@media
+(max-width: 640px) {
+
+  .vg-chatbot-panel {
+    right:
+      env(
+        safe-area-inset-right,
+        0px
+      );
+
+    bottom:
+      env(
+        safe-area-inset-bottom,
+        0px
+      );
+
+    width:
+      100vw;
+
+    height:
+      100dvh;
+
+    min-height: 0;
+
+    max-height:
+      none;
+
+    border:
+      0;
+
+    border-radius:
+      0;
+
+    transform:
+      translateY(18px);
+  }
+
+
+  .vg-chatbot-panel[
+    data-open="true"
+  ] {
+    transform:
+      translateY(0);
+  }
+
+
+  .vg-chatbot-panel__header {
+    padding-top:
+      calc(
+        14px +
+        env(
+          safe-area-inset-top,
+          0px
+        )
+      );
+  }
+
+
+  /**
+   * Cuando el panel está abierto,
+   * el launcher continúa en DOM,
+   * pero queda visualmente oculto.
+   */
+  .vg-chatbot-launcher[
+    data-expanded="true"
+  ] {
+    opacity: 0;
+
+    pointer-events:
+      none;
+  }
+
+
+  .vg-chatbot-messages {
+    padding:
+      18px 16px;
+  }
+
+
+  .vg-chatbot-composer {
+    padding-bottom:
+      calc(
+        13px +
+        env(
+          safe-area-inset-bottom,
+          0px
+        )
+      );
+  }
+}
+
+
+/**
+ * ============================================================
+ * VERY SMALL MOBILE
+ * ============================================================
+ */
+
+@media
+(max-width: 380px) {
+
+  .vg-chatbot-panel__title {
+    font-size:
+      14px;
+  }
+
+
+  .vg-chatbot-empty-state__title {
+    font-size:
+      22px;
+  }
+}
+
+
+/**
+ * ============================================================
+ * REDUCED MOTION
+ * ============================================================
+ */
+
+@media
+(prefers-reduced-motion: reduce) {
+
+  .vg-chatbot-panel {
+    transition:
+      none !important;
+
+    transform:
+      none !important;
+  }
+}
+
+/**
+ * ============================================================
+ * RESPONSE INTERACTIONS — 1.11.24 ACTION ROUTER
+ * ============================================================
+ */
+
+.vg-chatbot-interactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 0 14px;
+}
+
+
+.vg-chatbot-interaction {
+  min-height: 36px;
+  padding: 8px 11px;
+  border: 1px solid rgb(18 48 71 / 18%);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--vg-chatbot-ink);
+  font: 650 12px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  cursor: pointer;
+  transition: transform 120ms ease, border-color 120ms ease, background-color 120ms ease;
+}
+
+
+.vg-chatbot-interaction:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgb(18 48 71 / 42%);
+}
+
+
+.vg-chatbot-interaction--action[data-action-priority="primary"] {
+  border-color: var(--vg-chatbot-ink);
+  background: var(--vg-chatbot-ink);
+  color: #ffffff;
+}
+
+
+.vg-chatbot-interaction:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
+
+
+.vg-chatbot-interaction:focus-visible {
+  outline: 3px solid var(--vg-chatbot-focus);
+  outline-offset: 2px;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .vg-chatbot-interaction {
+    transition: none !important;
+  }
+}
+
+/**
+ * ============================================================
+ * 1.11.37 — TYPING INDICATOR
+ * ============================================================
+ */
+
+.vg-chatbot-typing {
+  pointer-events: none;
+}
+
+
+.vg-chatbot-typing__bubble {
+  min-width: 48px;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.vg-chatbot-typing__dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+
+.vg-chatbot-typing__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.38;
+  animation:
+    vg-chatbot-typing-dot
+    900ms
+    ease-in-out
+    infinite;
+}
+
+
+.vg-chatbot-typing__dot:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+
+.vg-chatbot-typing__dot:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+
+@keyframes vg-chatbot-typing-dot {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.32;
+  }
+
+  30% {
+    transform: translateY(-3px);
+    opacity: 0.78;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .vg-chatbot-typing__dot {
+    animation: none !important;
+    transform: none !important;
+    opacity: 0.55;
+  }
+}
+
+/* FINAL QA: retain header and close/reset controls in landscape. */
+@media (min-width: 641px) and (max-height: 600px) {
+  .vg-chatbot-panel { top: 8px; bottom: 8px; height: calc(100dvh - 16px); min-height: 0; max-height: none; }
+}
+@media (pointer: coarse) {
+  [data-vg-chatbot-interaction], .vg-chatbot-panel__close, .vg-chatbot-panel__reset,
+  [data-vg-chatbot-submit] { min-height: 44px; min-width: 44px; }
+}
+@media (min-width: 641px) and (max-height: 600px) {
+  .vg-chatbot-launcher[data-expanded="true"] { opacity: 0; pointer-events: none; }
+}
+.vg-chatbot-empty-options { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+.vg-chatbot-empty-options button, .vg-chatbot-empty-options a { border:1px solid #dbe3e8; border-radius:18px; background:#fff; color:#123344; font:600 12px/1.4 Arial,sans-serif; padding:10px 12px; min-height:44px; cursor:pointer; text-decoration:none; }
+.vg-chatbot-empty-options button:focus-visible, .vg-chatbot-empty-options a:focus-visible { outline:2px solid #157d8e; outline-offset:2px; }

@@ -1,0 +1,31 @@
+# ==========================================
+# Portfolio — archivos no versionables
+# ==========================================
+
+# Evidencias y artefactos locales de QA
+QA/
+
+# Contenido Substack pendiente de revisión
+# Nunca se promociona automáticamente a producción
+content/staged/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Node
+node_modules/
+
+# Variables de entorno / secretos futuros
+.env
+.env.*
+!.env.example
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos temporales
+*.tmp
+*.log

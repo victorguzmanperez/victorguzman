@@ -91,7 +91,7 @@
 
   <link
     rel="stylesheet"
-    href="styles.css"
+    href="styles.css?v=mob-h1.1"
   />
 
 </head>
@@ -233,6 +233,31 @@
           necesarios para explicar la consulta.
         </p>
 
+
+        <h3>2.1. Asistente conversacional y analítica de uso</h3>
+
+        <p>
+          El portfolio incluye un asistente conversacional. La conversación se
+          mantiene temporalmente en el navegador mediante <strong>sessionStorage</strong>
+          para poder conservar el contexto al cambiar de página dentro de la misma
+          sesión.
+        </p>
+
+        <p>
+          Si aceptas las cookies de analítica, el asistente puede enviar a
+          <strong>Google Analytics 4</strong> señales estructuradas sobre su uso,
+          como la apertura o cierre del chat, número de turnos, categoría general
+          de la consulta, fallbacks, uso de respuestas rápidas, acceso al
+          diagnóstico, contacto, apertura de Calendly y valoración estructurada
+          de utilidad.
+        </p>
+
+        <p>
+          Estas señales de analítica <strong>no incluyen el texto de los mensajes,
+          el nombre, correo electrónico, teléfono, el contenido del diagnóstico ni
+          una transcripción de la conversación</strong>. Si no aceptas Analytics,
+          estos eventos no se envían a Google Analytics.
+        </p>
 
         <h2>3. Para qué se utilizan los datos</h2>
 
@@ -714,5 +739,9 @@
 
 <script src="cookie-consent.js"></script>
 
+<script
+  type="module"
+  src="assets/chatbot/chatbot.js?v=conv-h3.25.1"
+></script>
 </body>
 </html>

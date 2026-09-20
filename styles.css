@@ -882,6 +882,30 @@ h3 {
 
 @media (max-width: 760px) {
 
+  /*
+   * MOB-H1 — El informe embebido es panorámico. En móvil no
+   * reservamos los 650/680 px de escritorio porque dejan una
+   * gran zona vacía bajo el lienzo de Power BI.
+   */
+  .powerbi-frame {
+    min-height: 0;
+    padding: 6px;
+    border-radius: 18px;
+  }
+
+  .powerbi-frame iframe {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 10;
+    border-radius: 12px;
+  }
+
+  .powerbi-frame .coming-soon {
+    inset: 6px;
+  }
+
   .diagnostic-form {
     padding: 22px;
     border-radius: 20px;
@@ -1707,3 +1731,9 @@ h3 {
     width: 100%;
   }
 }
+/* FINAL QA: long contact links must wrap on narrow screens. */
+.contact-card, .contact-item, .contact-cta { min-width: 0; max-width: 100%; }
+.contact-item { flex-wrap: wrap; }
+.contact-item a { min-width: 0; overflow-wrap: anywhere; }
+.cookie-banner { max-height: calc(100dvh - 28px); overflow-y: auto; }
+.cookie-banner-text { min-width: 0; }

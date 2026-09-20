@@ -118,7 +118,7 @@
 
   <link
     rel="stylesheet"
-    href="styles.css"
+    href="styles.css?v=mob-h1.1"
   />
 
 </head>
@@ -785,6 +785,31 @@ let submittedLead = null;
 let bookingAlternativeTracked = false;
 
 
+function diagnosticAnalyticsSource() {
+
+  try {
+
+    const chatbotState =
+      window.__VICTOR_CHATBOT__
+        ?.getState?.();
+
+    return (
+      chatbotState
+        ?.analytics
+        ?.diagnosticStartedSent === true
+        ? "chatbot"
+        : "direct"
+    );
+
+  } catch {
+
+    return "direct";
+
+  }
+
+}
+
+
 function showCalendlyBooking(name, email) {
 
   bookingSection.hidden = false;
@@ -983,7 +1008,9 @@ window.addEventListener(
       gaEventName,
       {
         booking_source:
-          "diagnostico"
+          diagnosticAnalyticsSource() === "chatbot"
+            ? "chatbot_diagnostic"
+            : "diagnostico"
       }
     );
 
@@ -1083,7 +1110,9 @@ window.addEventListener(
               "generate_lead",
               {
                 form_name:
-                  "diagnostico_automatizacion"
+                  "diagnostico_automatizacion",
+                lead_source:
+                  diagnosticAnalyticsSource()
               }
             );
 
@@ -1140,7 +1169,9 @@ window.addEventListener(
             "booking_alternative_click",
             {
               booking_source:
-                "diagnostico"
+                diagnosticAnalyticsSource() === "chatbot"
+                  ? "chatbot_diagnostic"
+                  : "diagnostico"
             }
           );
 
@@ -1302,5 +1333,9 @@ window.addEventListener(
 
 <script src="cookie-consent.js"></script>
 
+<script
+  type="module"
+  src="assets/chatbot/chatbot.js?v=conv-h3.25.1"
+></script>
 </body>
 </html>

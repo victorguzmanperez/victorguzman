@@ -41,7 +41,9 @@ function loadGoogleAnalytics() {
   window.gtag("js", new Date());
 
   window.gtag("config", GA_MEASUREMENT_ID, {
-    anonymize_ip: true
+    anonymize_ip: true,
+    ...(new URLSearchParams(window.location.search).get("debug_mode") === "true"
+      ? { debug_mode: true } : {})
   });
 }
 
