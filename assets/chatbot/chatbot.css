@@ -1894,3 +1894,198 @@ vg-chatbot-avatar-notification {
 .vg-chatbot-empty-options { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
 .vg-chatbot-empty-options button, .vg-chatbot-empty-options a { border:1px solid #dbe3e8; border-radius:18px; background:#fff; color:#123344; font:600 12px/1.4 Arial,sans-serif; padding:10px 12px; min-height:44px; cursor:pointer; text-decoration:none; }
 .vg-chatbot-empty-options button:focus-visible, .vg-chatbot-empty-options a:focus-visible { outline:2px solid #157d8e; outline-offset:2px; }
+
+/* ============================================================
+ * CONV-G1 — Guided Conversation Engine
+ * ============================================================ */
+
+.vg-chatbot--guided .vg-chatbot-composer {
+  display: none !important;
+}
+
+.vg-chatbot--guided .vg-chatbot-messages {
+  padding-bottom: 1rem;
+}
+
+.vg-guided-options {
+  display: grid;
+  gap: 0.85rem;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.15rem 0 0.4rem;
+}
+
+.vg-guided-options__title {
+  margin: 0;
+  color: var(--vg-chatbot-ink, #123047);
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.vg-guided-options__choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.vg-guided-option {
+  appearance: none;
+  border: 1px solid rgba(18, 48, 71, 0.15);
+  border-radius: 999px;
+  background: #fff;
+  color: #123047;
+  padding: 0.68rem 0.86rem;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 140ms ease,
+    background-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.vg-guided-option:hover,
+.vg-guided-option:focus-visible {
+  border-color: rgba(18, 48, 71, 0.45);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.vg-guided-option[aria-pressed="true"],
+.vg-guided-option.is-selected {
+  border-color: #123047;
+  background: #123047;
+  color: #fff;
+}
+
+.vg-guided-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  transform: none;
+}
+
+.vg-guided-options__continue {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.vg-guided-option--primary {
+  background: #123047;
+  border-color: #123047;
+  color: #fff;
+  min-width: 7.25rem;
+  justify-content: center;
+  text-align: center;
+}
+
+.vg-guided-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  padding-top: 0.75rem;
+  margin-top: 0.15rem;
+  border-top: 1px solid rgba(18, 48, 71, 0.09);
+}
+
+.vg-guided-shortcuts__label {
+  flex-basis: 100%;
+  color: rgba(18, 48, 71, 0.62);
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.vg-guided-option--shortcut {
+  padding: 0.52rem 0.7rem;
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: #fff;
+}
+
+.vg-guided-shortcuts + .vg-guided-nav {
+  border-top: 0;
+  padding-top: 0.2rem;
+}
+
+.vg-guided-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  padding-top: 0.75rem;
+  margin-top: 0.15rem;
+  border-top: 1px solid rgba(18, 48, 71, 0.09);
+}
+
+.vg-guided-option--nav,
+.vg-guided-option--finish {
+  padding: 0.52rem 0.7rem;
+  font-size: 0.76rem;
+  font-weight: 650;
+  background: rgba(18, 48, 71, 0.035);
+}
+
+.vg-guided-option--finish {
+  margin-left: auto;
+}
+
+@media (max-width: 640px) {
+  .vg-guided-options__choices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .vg-guided-option {
+    width: 100%;
+    min-height: 2.8rem;
+  }
+
+  .vg-guided-options__continue .vg-guided-option {
+    width: auto;
+  }
+
+  .vg-guided-shortcuts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .vg-guided-shortcuts__label {
+    grid-column: 1 / -1;
+  }
+
+  .vg-guided-nav {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+  }
+
+  .vg-guided-option--finish {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 390px) {
+  .vg-guided-options__choices {
+    grid-template-columns: 1fr;
+  }
+
+  .vg-guided-shortcuts {
+    grid-template-columns: 1fr;
+  }
+
+  .vg-guided-shortcuts__label {
+    grid-column: auto;
+  }
+
+  .vg-guided-nav {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .vg-guided-option--finish {
+    grid-column: 1 / -1;
+  }
+}

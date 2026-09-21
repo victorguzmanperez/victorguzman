@@ -33,7 +33,7 @@ test("FINAL QA public pages load the release-versioned chatbot bootstrap", () =>
     const html = read(page);
     assert.match(
       html,
-      /assets\/chatbot\/chatbot\.js\?v=conv-h3\.25\.1/,
+      /assets\/chatbot\/chatbot\.js\?v=conv-g1\.12/,
       page,
     );
   }
@@ -45,7 +45,7 @@ test("FINAL QA public pages load the release-versioned chatbot bootstrap", () =>
   const qualityGate = read("assets/chatbot/core/conversation-quality-gate.js");
 
   assert.match(bootstrap, /navigation-handoff\.js\?v=conv-h3\.23\.1/);
-  assert.match(bootstrap, /diagnostic-prefill\.js\?v=conv-h3\.23\.1/);
+  assert.match(bootstrap, /diagnostic-prefill\.js\?v=conv-g1\.11/);
   assert.match(bootstrap, /ui\/ui\.js\?v=mob-h1\.1/);
   assert.match(bootstrap, /actions\.js\?v=mob-h1\.1/);
   assert.match(bootstrap, /dialogue-manager\.js\?v=conv-h3\.25\.1/);

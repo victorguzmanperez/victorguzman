@@ -88,8 +88,9 @@ import {
 import {
   applyDiagnosticPrefillToForm,
   buildDiagnosticPrefillFromState,
+  resetDiagnosticFormForNewConversation,
   isDiagnosticStartAction,
-} from "./core/diagnostic-prefill.js?v=conv-h3.23.1";
+} from "./core/diagnostic-prefill.js?v=conv-g1.11";
 
 import {
   detectReducedMotion,
@@ -104,6 +105,11 @@ import {
   renderTypingIndicator,
   resetConversationComposer,
 } from "./ui/conversation-renderer.js?v=conv-h3.22";
+
+import {
+  renderGuidedOptions,
+  setGuidedComposerMode,
+} from "./ui/guided-conversation-renderer.js?v=conv-g1.11";
 
 
 /**
@@ -127,6 +133,10 @@ const SUPPORT_PAGE_URL =
     "../../apoya.html",
     import.meta.url,
   ).href;
+
+const GUIDED_MODE_ENABLED =
+  chatbotConfig?.conversation
+    ?.guidedMode === true;
 
 /**
  * MOB-H2 — En dispositivos táctiles no enfocamos automáticamente
@@ -172,6 +182,38 @@ export function shouldDismissComposerKeyboardAfterSubmit({
   return !shouldAutoFocusComposerOnLauncher({
     windowRef,
   });
+}
+
+export function shouldMinimizeGuidedPanelForNavigation({
+  windowRef = globalThis.window,
+  breakpoint = 768,
+} = {}) {
+  const viewportWidth =
+    Number(windowRef?.innerWidth);
+
+  if (
+    Number.isFinite(viewportWidth) &&
+    viewportWidth > 0
+  ) {
+    return viewportWidth <= breakpoint;
+  }
+
+  if (
+    typeof windowRef?.matchMedia ===
+      "function"
+  ) {
+    try {
+      return Boolean(
+        windowRef.matchMedia(
+          `(max-width: ${breakpoint}px)`,
+        ).matches,
+      );
+    } catch {
+      return false;
+    }
+  }
+
+  return false;
 }
 
 export const CHATBOT_EVENTS =
@@ -220,56 +262,29 @@ export const CHATBOT_EVENTS =
  * realmente con el asistente.
  */
 
-const CORE_MODULE_LOADERS =
+const LEGACY_CORE_MODULE_LOADERS =
   Object.freeze({
-    nlu:
-      () =>
-        import(
-          "./core/nlu.js"
-        ),
-
-    entities:
-      () =>
-        import(
-          "./core/entities.js"
-        ),
-
-    dialogueManager:
-      () =>
-        import(
-          "./core/dialogue-manager.js?v=conv-h3.25.1"
-        ),
-
-    actions:
-      () =>
-        import(
-          "./core/actions.js?v=mob-h1.1"
-        ),
-
-    intents:
-      () =>
-        import(
-          "./data/intents.js"
-        ),
-
-    knowledge:
-      () =>
-        import(
-          "./data/knowledge.js"
-        ),
-
-    policies:
-      () =>
-        import(
-          "./data/policies.js"
-        ),
-
-    responses:
-      () =>
-        import(
-          "./data/responses.js"
-        ),
+    nlu: () => import("./core/nlu.js"),
+    entities: () => import("./core/entities.js"),
+    dialogueManager: () => import("./core/dialogue-manager.js?v=conv-h3.25.1"),
+    actions: () => import("./core/actions.js?v=mob-h1.1"),
+    intents: () => import("./data/intents.js"),
+    knowledge: () => import("./data/knowledge.js"),
+    policies: () => import("./data/policies.js"),
+    responses: () => import("./data/responses.js"),
   });
+
+const GUIDED_CORE_MODULE_LOADERS =
+  Object.freeze({
+    guidedConversation: () =>
+      import("./core/guided-conversation.js?v=conv-g1.11"),
+  });
+
+function activeCoreModuleLoaders() {
+  return GUIDED_MODE_ENABLED
+    ? GUIDED_CORE_MODULE_LOADERS
+    : LEGACY_CORE_MODULE_LOADERS;
+}
 
 
 let loadedCoreModules = null;
@@ -841,7 +856,7 @@ export function ensureChatbotStylesheet({
 
   const href =
     new URL(
-      "./chatbot.css",
+      "./chatbot.css?v=conv-g1.11",
       import.meta.url,
     ).href;
 
@@ -1095,7 +1110,7 @@ export async function ensureCoreLoaded() {
   coreLoadPromise =
     Promise.all(
       Object.entries(
-        CORE_MODULE_LOADERS,
+        activeCoreModuleLoaders(),
       ).map(
         async (
           [
@@ -1341,6 +1356,9 @@ export function bootstrapChatbot({
   let actionRouter =
     null;
 
+  let guidedController =
+    null;
+
   let analyticsObserver =
     null;
 
@@ -1464,9 +1482,11 @@ export function bootstrapChatbot({
                 ?.toggle({
                   persist: true,
                   focus:
-                    shouldAutoFocusComposerOnLauncher({
-                      windowRef,
-                    }),
+                    GUIDED_MODE_ENABLED
+                      ? false
+                      : shouldAutoFocusComposerOnLauncher({
+                          windowRef,
+                        }),
                 });
 
 
@@ -1494,7 +1514,13 @@ export function bootstrapChatbot({
             if (open) {
               ensureCoreLoaded()
                 .then(
-                  () => {
+                  (core) => {
+                    if (GUIDED_MODE_ENABLED) {
+                      initializeGuidedConversation(
+                        core,
+                      );
+                    }
+
                     dispatchChatbotEvent({
                       documentRef,
                       windowRef,
@@ -1530,6 +1556,10 @@ export function bootstrapChatbot({
   function setComposerBusy(
     busy,
   ) {
+    if (GUIDED_MODE_ENABLED) {
+      return;
+    }
+
     const input =
       shellController
         ?.input ??
@@ -2119,18 +2149,47 @@ export function bootstrapChatbot({
 
     resetConversation();
 
+    /*
+     * CONV-G1.4.1 — Si el reset se hace mientras el visitante ya está
+     * en diagnostico.html, limpiamos también el DOM del formulario.
+     * El estado conversacional ya se reinicia arriba; este paso evita
+     * que un formulario pre-rellenado de la conversación anterior siga
+     * visible cuando el usuario inicia una conversación nueva.
+     */
+    resetDiagnosticFormForNewConversation({
+      documentRef,
+    });
+
     resetConversationComposer(
       shellController,
     );
 
-    renderConversationState({
-      shellController,
+    if (
+      GUIDED_MODE_ENABLED &&
+      guidedController
+    ) {
+      guidedController.reset();
+      guidedAppendAssistant(
+        guidedController.getView(),
+      );
 
-      state:
-        getState(),
+      /*
+       * CONV-G1.2.1 — Tras «Nueva conversación» el modo guiado debe
+       * reconstruir el Home completo, incluidas sus opciones. Renderizar
+       * solo los mensajes dejaba la bienvenida visible pero borraba los
+       * botones hasta el siguiente refresh del navegador.
+       */
+      renderGuidedConversation();
+    } else {
+      renderConversationState({
+        shellController,
 
-      documentRef,
-    });
+        state:
+          getState(),
+
+        documentRef,
+      });
+    }
 
     /*
      * UX-H0: el reset debe sobrevivir a la navegación inmediatamente.
@@ -2206,6 +2265,651 @@ export function bootstrapChatbot({
         },
         2800,
       );
+  }
+
+
+  function guidedInternalUrl(target) {
+    return new URL(
+      `../../${String(target ?? "").replace(/^\/+/, "")}`,
+      import.meta.url,
+    ).href;
+  }
+
+
+  function guidedDispatchTurn({
+    route,
+    feedbackRating = null,
+  } = {}) {
+    dispatchChatbotEvent({
+      documentRef,
+      windowRef,
+      type:
+        CHATBOT_EVENTS
+          .TURN_PROCESSED,
+      detail: {
+        source: "guided-click",
+        route: route ?? null,
+        intent: "guided_navigation",
+        responseKind: "guided",
+        outcome: "answered",
+        confidenceBucket: "high",
+        fallbackLevel: "none",
+        feedbackRating,
+      },
+    });
+  }
+
+
+  function guidedDispatchInteraction({
+    id,
+    type = "answer",
+    destination = null,
+  } = {}) {
+    dispatchInteractionResult({
+      status: "executed",
+      interactionId: id ?? null,
+      interactionType: type,
+      destination,
+    });
+  }
+
+
+  function guidedAppendAssistant(view) {
+    if (!view?.message) {
+      return;
+    }
+
+    appendMessage({
+      role: MESSAGE_ROLE.ASSISTANT,
+      type: MESSAGE_TYPE.TEXT,
+      text: view.message,
+      responseId: `guided:${view.id}`,
+    });
+  }
+
+
+  function guidedTrimLastExchange() {
+    updateState(
+      (draft) => {
+        const messages =
+          draft.conversation.messages;
+
+        if (messages.length >= 2) {
+          draft.conversation.messages =
+            messages.slice(0, -2);
+        }
+      },
+      {
+        source:
+          "guided:back",
+      },
+    );
+  }
+
+
+  function initializeGuidedConversation(core) {
+    if (!GUIDED_MODE_ENABLED) {
+      return false;
+    }
+
+    setGuidedComposerMode(
+      shellController,
+      true,
+    );
+
+    if (guidedController) {
+      renderGuidedConversation();
+      return true;
+    }
+
+    const createController =
+      core
+        ?.guidedConversation
+        ?.createGuidedConversationController;
+
+    if (
+      typeof createController !==
+        "function"
+    ) {
+      throw new TypeError(
+        "Guided Conversation controller unavailable",
+      );
+    }
+
+    const guidedStorageKey =
+      core
+        .guidedConversation
+        .GUIDED_STORAGE_KEY;
+
+    let hasGuidedSession = false;
+
+    try {
+      hasGuidedSession = Boolean(
+        windowRef
+          ?.sessionStorage
+          ?.getItem?.(
+            guidedStorageKey,
+          ),
+      );
+    } catch {
+      hasGuidedSession = false;
+    }
+
+    guidedController =
+      createController({
+        storageRef:
+          windowRef
+            ?.sessionStorage,
+      });
+
+    if (
+      !hasGuidedSession &&
+      getState()
+        .conversation
+        .messages
+        .length > 0
+    ) {
+      resetConversation();
+    }
+
+    if (
+      getState()
+        .conversation
+        .messages
+        .length === 0
+    ) {
+      guidedAppendAssistant(
+        guidedController.getView(),
+      );
+    }
+
+    renderGuidedConversation();
+
+    if (startPersistence) {
+      flushStateSave();
+    }
+
+    return true;
+  }
+
+
+  function renderGuidedConversation() {
+    if (!guidedController) {
+      return false;
+    }
+
+    renderConversationState({
+      shellController,
+      state: getState(),
+      documentRef,
+      forceScrollToEnd: true,
+      smoothScroll: false,
+    });
+
+    const view =
+      guidedController.getView();
+
+    renderGuidedOptions({
+      shellController,
+      view,
+      documentRef,
+
+      onSelect:
+        (option) => {
+          const result =
+            guidedController.select(
+              option.id,
+            );
+
+          if (result?.action) {
+            guidedDispatchInteraction({
+              id: option.id,
+              type:
+                result.action === "diagnostic"
+                  ? "start-diagnostic"
+                  : result.action === "calendly"
+                    ? "open-calendly"
+                    : result.action === "contact"
+                      ? "open-contact"
+                      : result.action === "navigate"
+                        ? "navigate"
+                        : "answer",
+              destination:
+                result.target ?? null,
+            });
+
+            handleGuidedAction(
+              result,
+              option,
+            );
+
+            return;
+          }
+
+          if (
+            result?.changed &&
+            !result?.advanced
+          ) {
+            renderGuidedConversation();
+            return;
+          }
+
+          if (
+            result?.changed &&
+            result?.advanced
+          ) {
+            appendMessage({
+              role: MESSAGE_ROLE.USER,
+              type: MESSAGE_TYPE.TEXT,
+              text:
+                result.selectedLabel,
+            });
+
+            const nextView =
+              guidedController.getView();
+
+            guidedAppendAssistant(
+              nextView,
+            );
+
+            guidedDispatchInteraction({
+              id: option.id,
+              type: "answer",
+            });
+
+            guidedDispatchTurn({
+              route:
+                nextView.id,
+              feedbackRating:
+                option.selectionKey ===
+                  "feedback"
+                  ? option.value
+                  : null,
+            });
+
+            renderGuidedConversation();
+            flushStateSave();
+          }
+        },
+
+      onContinue:
+        () => {
+          const result =
+            guidedController
+              .continueMulti();
+
+          if (!result?.changed) {
+            return;
+          }
+
+          appendMessage({
+            role: MESSAGE_ROLE.USER,
+            type: MESSAGE_TYPE.TEXT,
+            text:
+              result.selectedLabel,
+          });
+
+          const nextView =
+            guidedController.getView();
+
+          guidedAppendAssistant(
+            nextView,
+          );
+
+          guidedDispatchInteraction({
+            id:
+              `guided-continue-${nextView.id}`,
+            type: "answer",
+          });
+
+          guidedDispatchTurn({
+            route:
+              nextView.id,
+          });
+
+          renderGuidedConversation();
+          flushStateSave();
+        },
+
+      onBack:
+        () => {
+          const result =
+            guidedController.back();
+
+          if (!result?.changed) {
+            return;
+          }
+
+          guidedTrimLastExchange();
+          renderGuidedConversation();
+          flushStateSave();
+        },
+
+      onHome:
+        () => {
+          guidedController.home();
+
+          appendMessage({
+            role: MESSAGE_ROLE.USER,
+            type: MESSAGE_TYPE.TEXT,
+            text: "Inicio",
+          });
+
+          guidedAppendAssistant(
+            guidedController.getView(),
+          );
+
+          guidedDispatchInteraction({
+            id: "guided-home",
+            type: "answer",
+          });
+
+          guidedDispatchTurn({
+            route: "home",
+          });
+
+          renderGuidedConversation();
+          flushStateSave();
+        },
+
+      onDiagnostic:
+        () => {
+          const currentView =
+            guidedController.getView();
+
+          guidedDispatchInteraction({
+            id: "guided-universal-diagnostic",
+            type: "start-diagnostic",
+            destination:
+              currentView
+                ?.diagnosticTarget ??
+              "diagnostico.html#diagnosticForm",
+          });
+
+          handleGuidedAction(
+            {
+              action: "diagnostic",
+              target:
+                currentView
+                  ?.diagnosticTarget ??
+                "diagnostico.html#diagnosticForm",
+            },
+            {
+              label: "Completar diagnóstico",
+            },
+          );
+        },
+
+      onContact:
+        () => {
+          const result =
+            guidedController.contact();
+
+          if (!result?.changed) {
+            return;
+          }
+
+          appendMessage({
+            role: MESSAGE_ROLE.USER,
+            type: MESSAGE_TYPE.TEXT,
+            text: "Contactar con Víctor",
+          });
+
+          const nextView =
+            guidedController.getView();
+
+          guidedAppendAssistant(
+            nextView,
+          );
+
+          guidedDispatchInteraction({
+            id: "guided-universal-contact",
+            type: "open-contact",
+          });
+
+          guidedDispatchTurn({
+            route: nextView.id,
+          });
+
+          renderGuidedConversation();
+          flushStateSave();
+        },
+
+      onFinish:
+        () => {
+          guidedController.finish();
+
+          appendMessage({
+            role: MESSAGE_ROLE.USER,
+            type: MESSAGE_TYPE.TEXT,
+            text:
+              "No necesito nada más",
+          });
+
+          guidedAppendAssistant(
+            guidedController.getView(),
+          );
+
+          guidedDispatchInteraction({
+            id:
+              "guided-finish",
+            type: "answer",
+          });
+
+          guidedDispatchTurn({
+            route: "feedback",
+          });
+
+          renderGuidedConversation();
+          flushStateSave();
+        },
+    });
+
+    return true;
+  }
+
+
+  function minimizeGuidedPanelForNavigationIfNeeded() {
+    if (
+      !shouldMinimizeGuidedPanelForNavigation({
+        windowRef,
+      })
+    ) {
+      return false;
+    }
+
+    shellController
+      ?.close?.({
+        persist: true,
+        focus: false,
+      });
+
+    return true;
+  }
+
+  function handleGuidedAction(
+    result,
+    option,
+  ) {
+    const action =
+      result?.action;
+
+    const target =
+      result?.target;
+
+    if (
+      action === "close"
+    ) {
+      shellController
+        ?.close?.({
+          persist: true,
+          focus: false,
+        });
+
+      performConversationReset({
+        source:
+          "guided_close",
+      });
+
+      guidedController?.reset?.();
+      flushStateSave();
+      return true;
+    }
+
+    if (
+      action === "support"
+    ) {
+      shellController
+        ?.close?.({
+          persist: true,
+          focus: false,
+        });
+
+      performConversationReset({
+        source:
+          "guided_support",
+      });
+
+      guidedController?.reset?.();
+      flushStateSave();
+
+      windowRef.location.assign(
+        guidedInternalUrl(
+          target,
+        ),
+      );
+
+      return true;
+    }
+
+    if (
+      action === "diagnostic"
+    ) {
+      const guidedDiagnosticPrefill =
+        guidedController
+          .buildDiagnosticPrefill();
+
+      updateDiagnosticFields(
+        guidedDiagnosticPrefill,
+      );
+
+      /*
+       * CONV-G1.4.2 — Si el visitante ya está en diagnostico.html,
+       * navegar otra vez al mismo destino puede limitarse a cambiar el
+       * hash y no provoca un nuevo bootstrap. Aplicamos por tanto el
+       * prefill también al formulario que ya está visible. Fuera de la
+       * página de diagnóstico el helper es fail-soft y no modifica nada.
+       *
+       * La función de prefill conserva los valores escritos manualmente
+       * y nunca marca la aceptación de privacidad.
+       */
+      applyDiagnosticPrefillToForm({
+        documentRef,
+        fields:
+          guidedDiagnosticPrefill,
+        allowPrefill: true,
+      });
+
+      setLastAction(
+        "v2-diagnostic",
+      );
+
+      appendMessage({
+        role: MESSAGE_ROLE.USER,
+        type: MESSAGE_TYPE.TEXT,
+        text:
+          option?.label ??
+          "Completar diagnóstico",
+      });
+
+      guidedController
+        ?.diagnosticHandoff?.();
+
+      const handoffView =
+        guidedController
+          ?.getView?.();
+
+      if (handoffView) {
+        guidedAppendAssistant(
+          handoffView,
+        );
+
+        guidedDispatchTurn({
+          route:
+            "diagnostic.handoff",
+        });
+
+        renderGuidedConversation();
+      }
+
+      minimizeGuidedPanelForNavigationIfNeeded();
+
+      flushStateSave();
+
+      windowRef.location.assign(
+        guidedInternalUrl(
+          target,
+        ),
+      );
+
+      return true;
+    }
+
+    if (
+      action === "navigate" ||
+      action === "contact"
+    ) {
+      minimizeGuidedPanelForNavigationIfNeeded();
+
+      flushStateSave();
+
+      windowRef.location.assign(
+        guidedInternalUrl(
+          target,
+        ),
+      );
+
+      return true;
+    }
+
+    if (
+      action === "calendly"
+    ) {
+      windowRef.open?.(
+        target,
+        "_blank",
+        "noopener,noreferrer",
+      );
+
+      minimizeGuidedPanelForNavigationIfNeeded();
+
+      flushStateSave();
+      return true;
+    }
+
+    if (
+      action === "external"
+    ) {
+      if (
+        /^mailto:/i.test(
+          target ?? "",
+        )
+      ) {
+        windowRef.location.assign(
+          target,
+        );
+      } else {
+        windowRef.open?.(
+          target,
+          "_blank",
+          "noopener,noreferrer",
+        );
+      }
+
+      return true;
+    }
+
+    return false;
   }
 
 
@@ -2581,6 +3285,28 @@ export function bootstrapChatbot({
     });
 
 
+    if (GUIDED_MODE_ENABLED) {
+      setGuidedComposerMode(
+        shellController,
+        true,
+      );
+
+      if (getState().ui.isOpen) {
+        ensureCoreLoaded()
+          .then((core) => {
+            initializeGuidedConversation(
+              core,
+            );
+          })
+          .catch((error) => {
+            debugLog(
+              "Guided Conversation initialization failed",
+              error,
+            );
+          });
+      }
+    }
+
     /*
      * MOB-H3.1 — La opción «Completar diagnóstico» del estado
      * inicial es un enlace directo del template y no pasa por el
@@ -2595,7 +3321,10 @@ export function bootstrapChatbot({
           ".vg-chatbot-empty-options a[href]",
         ) ?? null;
 
-    if (openingDiagnosticLink) {
+    if (
+      openingDiagnosticLink &&
+      !GUIDED_MODE_ENABLED
+    ) {
       openingDiagnosticLink.addEventListener(
         "click",
         (event) => {
@@ -2825,10 +3554,46 @@ export function bootstrapChatbot({
      * mensaje en una recarga posterior.
      */
 
-    const navigationHandoff =
+    const navigationHandoffCandidate =
       buildNavigationHandoff(
         getState(),
       );
+
+    /*
+     * CONV-G1.2 — En modo guiado el handoff al diagnóstico ya
+     * pertenece al Conversation Graph. Aplicamos únicamente el
+     * prefill y consumimos el marcador de navegación; no añadimos
+     * los mensajes/acciones legacy porque duplicarían la despedida
+     * y podrían borrar las opciones terminales de feedback.
+     */
+    if (
+      GUIDED_MODE_ENABLED &&
+      navigationHandoffCandidate
+    ) {
+      applyDiagnosticPrefillToForm({
+        documentRef,
+        fields:
+          getState().diagnostic.fields,
+        allowPrefill: true,
+      });
+
+      dismissTrailingDiagnosticQuestion({
+        id:
+          navigationHandoffCandidate
+            .sourceActionId,
+      });
+
+      setLastAction(null);
+
+      if (startPersistence) {
+        flushStateSave();
+      }
+    }
+
+    const navigationHandoff =
+      GUIDED_MODE_ENABLED
+        ? null
+        : navigationHandoffCandidate;
 
     if (navigationHandoff) {
       /*

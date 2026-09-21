@@ -22,6 +22,10 @@ import * as storage
   from "../core/storage.js";
 
 import {
+  chatbotConfig,
+} from "../core/config.js";
+
+import {
   CHATBOT_GLOBAL_KEY,
   CHATBOT_ROOT_ID,
   CHATBOT_STYLES_ID,
@@ -31,6 +35,7 @@ import {
   ensureChatbotStylesheet,
   shouldAutoFocusComposerOnLauncher,
   shouldDismissComposerKeyboardAfterSubmit,
+  shouldMinimizeGuidedPanelForNavigation,
 } from "../chatbot.js";
 
 
@@ -1019,7 +1024,7 @@ test(
 
     assert.match(
       first.href,
-      /chatbot\.css$/,
+      /chatbot\.css\?v=conv-g1\.11$/,
     );
 
     assert.equal(
@@ -1091,6 +1096,35 @@ test(
   },
 );
 
+
+test(
+  "CONV-G1.1 guided navigation stays open on desktop and minimizes on mobile",
+  () => {
+    assert.equal(
+      shouldMinimizeGuidedPanelForNavigation({
+        windowRef: { innerWidth: 1440 },
+      }),
+      false,
+    );
+
+    assert.equal(
+      shouldMinimizeGuidedPanelForNavigation({
+        windowRef: { innerWidth: 390 },
+      }),
+      true,
+    );
+
+    assert.equal(
+      shouldMinimizeGuidedPanelForNavigation({
+        windowRef: {
+          innerWidth: Number.NaN,
+          matchMedia: () => ({ matches: true }),
+        },
+      }),
+      true,
+    );
+  },
+);
 
 /**
  * ============================================================
@@ -1329,7 +1363,7 @@ test(
 
 
 test(
-  "NAV-H1.3 diagnostic bootstrap removes restored pending question before arrival handoff",
+  "CONV-G1.2 guided diagnostic bootstrap removes pending question and suppresses legacy handoff",
   () => {
     cleanRuntime();
 
@@ -1416,7 +1450,7 @@ test(
             "Te he traído al diagnóstico",
           ),
       ),
-      true,
+      false,
     );
 
     assert.equal(
@@ -1602,15 +1636,25 @@ test(
       second,
     );
 
-    assert.equal(
-      typeof first.nlu,
-      "object",
-    );
+    if (
+      chatbotConfig?.conversation
+        ?.guidedMode === true
+    ) {
+      assert.equal(
+        typeof first.guidedConversation,
+        "object",
+      );
+    } else {
+      assert.equal(
+        typeof first.nlu,
+        "object",
+      );
 
-    assert.equal(
-      typeof first.knowledge,
-      "object",
-    );
+      assert.equal(
+        typeof first.knowledge,
+        "object",
+      );
+    }
 
     assert.equal(
       state

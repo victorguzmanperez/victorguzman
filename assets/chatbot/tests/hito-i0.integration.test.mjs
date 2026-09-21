@@ -22,6 +22,10 @@ import * as storage
   from "../core/storage.js";
 
 import {
+  chatbotConfig,
+} from "../core/config.js";
+
+import {
   CHATBOT_GLOBAL_KEY,
   CHATBOT_ROOT_ID,
   CHATBOT_STYLES_ID,
@@ -1330,7 +1334,10 @@ test(
 
     assert.equal(
       documentRef.activeElement,
-      api.shell.input,
+      chatbotConfig?.conversation
+        ?.guidedMode === true
+        ? launcher
+        : api.shell.input,
     );
 
 
@@ -2239,34 +2246,46 @@ test(
     );
 
 
-    assert.equal(
-      typeof first.nlu,
-      "object",
-    );
+    if (
+      chatbotConfig?.conversation
+        ?.guidedMode === true
+    ) {
+      assert.equal(
+        typeof first.guidedConversation,
+        "object",
+      );
+    } else {
+      assert.equal(
+        typeof first.nlu,
+        "object",
+      );
+
+      assert.equal(
+        typeof first.entities,
+        "object",
+      );
+
+      assert.equal(
+        typeof first.dialogueManager,
+        "object",
+      );
+
+      assert.equal(
+        typeof first.actions,
+        "object",
+      );
+    }
 
 
-    assert.equal(
-      typeof first.entities,
-      "object",
-    );
-
-
-    assert.equal(
-      typeof first.dialogueManager,
-      "object",
-    );
-
-
-    assert.equal(
-      typeof first.actions,
-      "object",
-    );
-
-
-    assert.equal(
-      typeof first.knowledge,
-      "object",
-    );
+    if (
+      chatbotConfig?.conversation
+        ?.guidedMode !== true
+    ) {
+      assert.equal(
+        typeof first.knowledge,
+        "object",
+      );
+    }
 
 
     assert.equal(

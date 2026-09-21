@@ -5,6 +5,7 @@ import {
   DIAGNOSTIC_NEED,
   applyDiagnosticPrefillToForm,
   buildDiagnosticPrefillFromState,
+  resetDiagnosticFormForNewConversation,
 } from "../core/diagnostic-prefill.js";
 
 function baseState(overrides = {}) {
@@ -170,5 +171,138 @@ test("H3.23 arrival prefill is conservative, idempotent and never touches privac
   const second = applyDiagnosticPrefillToForm({ documentRef: doc, fields, allowPrefill: true });
   assert.equal(second.applied, true);
   assert.equal(doc.getElementById("company").value, "Escrito por el usuario");
+  assert.equal(doc.privacy.checked, false);
+});
+
+test("CONV-G1 guided 'Otro proceso' maps to the existing diagnostic checkbox", () => {
+  const doc = fakeDocument();
+  const fields = {
+    name: null,
+    company: null,
+    email: null,
+    phone: null,
+    needs: [DIAGNOSTIC_NEED.OTHER],
+    currentProcess: null,
+    users: null,
+    timeframe: null,
+    objective: null,
+    additionalInfo: null,
+  };
+
+  const result = applyDiagnosticPrefillToForm({ documentRef: doc, fields, allowPrefill: true });
+  assert.equal(result.applied, true);
+  assert.equal(doc.checkboxes.find(item => item.value === "Otro").checked, true);
+  assert.equal(doc.privacy.checked, false);
+});
+
+
+test("CONV-G1.4.1 reset clears a previously prefilled diagnostic before a direct diagnostic", () => {
+  const doc = fakeDocument();
+  const previousFields = {
+    name: "Ana",
+    company: "Empresa anterior",
+    email: "ana@example.com",
+    phone: "612345678",
+    needs: [DIAGNOSTIC_NEED.REPORTING, DIAGNOSTIC_NEED.EXCEL_FILES],
+    currentProcess: "Proceso anterior con Excel.",
+    users: 4,
+    timeframe: "urgent",
+    objective: "Ahorrar tiempo.",
+    additionalInfo: "Datos de la conversación anterior.",
+  };
+
+  applyDiagnosticPrefillToForm({
+    documentRef: doc,
+    fields: previousFields,
+    allowPrefill: true,
+  });
+  doc.privacy.checked = true;
+
+  const reset = resetDiagnosticFormForNewConversation({ documentRef: doc });
+  assert.equal(reset.reset, true);
+
+  for (const id of ["name", "company", "email", "phone", "currentProcess", "objective", "additional", "users", "start"]) {
+    assert.equal(doc.getElementById(id).value, "", id);
+  }
+  assert.equal(doc.checkboxes.some((item) => item.checked), false);
+  assert.equal(doc.privacy.checked, false);
+
+  const emptyFields = buildDiagnosticPrefillFromState(baseState());
+  applyDiagnosticPrefillToForm({
+    documentRef: doc,
+    fields: emptyFields,
+    allowPrefill: true,
+  });
+
+  assert.equal(doc.checkboxes.some((item) => item.checked), false);
+  assert.equal(doc.getElementById("currentProcess").value, "");
+  assert.equal(doc.getElementById("objective").value, "");
+  assert.equal(doc.privacy.checked, false);
+});
+
+test("CONV-G1.4.1 reset helper is fail-soft outside diagnostico.html", () => {
+  const result = resetDiagnosticFormForNewConversation({
+    documentRef: {
+      getElementById() { return null; },
+      querySelectorAll() { return []; },
+    },
+  });
+  assert.equal(result.reset, false);
+  assert.deepEqual(result.changedFields, []);
+});
+
+
+test("CONV-G1.4.2 same-page diagnostic reapplies a new discovery immediately after reset", () => {
+  const doc = fakeDocument();
+
+  const oldFields = {
+    name: null,
+    company: null,
+    email: null,
+    phone: null,
+    needs: [DIAGNOSTIC_NEED.REPORTING, DIAGNOSTIC_NEED.EXCEL_FILES],
+    currentProcess: "Proceso anterior con Excel.",
+    users: 4,
+    timeframe: "urgent",
+    objective: "Ahorrar tiempo.",
+    additionalInfo: "Contexto anterior.",
+  };
+
+  applyDiagnosticPrefillToForm({
+    documentRef: doc,
+    fields: oldFields,
+    allowPrefill: true,
+  });
+
+  resetDiagnosticFormForNewConversation({ documentRef: doc });
+
+  const newFields = {
+    name: null,
+    company: null,
+    email: null,
+    phone: null,
+    needs: [DIAGNOSTIC_NEED.MANUAL_PROCESS],
+    currentProcess: "Proceso nuevo con Access y CSV.",
+    users: 1,
+    timeframe: "3 months",
+    objective: "Reducir errores.",
+    additionalInfo: "Herramientas: Access y CSV.",
+  };
+
+  const applied = applyDiagnosticPrefillToForm({
+    documentRef: doc,
+    fields: newFields,
+    allowPrefill: true,
+  });
+
+  assert.equal(applied.applied, true);
+  assert.equal(doc.getElementById("currentProcess").value, "Proceso nuevo con Access y CSV.");
+  assert.equal(doc.getElementById("users").value, "1 persona");
+  assert.equal(doc.getElementById("start").value, "En los próximos tres meses");
+  assert.equal(doc.getElementById("objective").value, "Reducir errores.");
+  assert.equal(doc.getElementById("additional").value, "Herramientas: Access y CSV.");
+  assert.equal(doc.checkboxes.find(item => item.value === "Procesos manuales").checked, true);
+  assert.equal(doc.checkboxes.find(item => item.value === "Informes y cuadros de mando").checked, false);
+  assert.equal(doc.checkboxes.find(item => item.value === "Archivos Excel").checked, false);
   assert.equal(doc.privacy.checked, false);
 });

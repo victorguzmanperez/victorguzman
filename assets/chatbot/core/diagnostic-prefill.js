@@ -17,6 +17,7 @@ export const DIAGNOSTIC_NEED = Object.freeze({
   EXCEL_FILES: "excel-files",
   SALES_CUSTOMERS: "sales-customers",
   COLLECTIONS_BILLING: "collections-billing",
+  OTHER: "other",
 });
 
 const NEED_TO_FORM_VALUE = Object.freeze({
@@ -25,6 +26,7 @@ const NEED_TO_FORM_VALUE = Object.freeze({
   [DIAGNOSTIC_NEED.EXCEL_FILES]: "Archivos Excel",
   [DIAGNOSTIC_NEED.SALES_CUSTOMERS]: "Ventas y clientes",
   [DIAGNOSTIC_NEED.COLLECTIONS_BILLING]: "Cobros y facturación",
+  [DIAGNOSTIC_NEED.OTHER]: "Otro",
 });
 
 const TOOL_LABELS = Object.freeze({
@@ -307,6 +309,76 @@ function timeframeToOption(timeframe) {
   if (weeks && Number(weeks[1]) <= 12) return "En los próximos tres meses";
 
   return null;
+}
+
+/**
+ * CONV-G1.4.1 — Limpia explícitamente el formulario de diagnóstico
+ * cuando el visitante inicia una nueva conversación estando ya en
+ * diagnostico.html.
+ *
+ * Se mantiene separado de applyDiagnosticPrefillToForm(): el prefill
+ * normal nunca debe sobrescribir lo escrito por el visitante, mientras
+ * que un reset explícito sí debe garantizar un diagnóstico nuevo y limpio.
+ */
+export function resetDiagnosticFormForNewConversation({
+  documentRef = globalThis.document,
+} = {}) {
+  if (!documentRef) {
+    return Object.freeze({ reset: false, changedFields: Object.freeze([]) });
+  }
+
+  const form = documentRef.getElementById?.("diagnosticForm");
+  if (!form) {
+    return Object.freeze({ reset: false, changedFields: Object.freeze([]) });
+  }
+
+  const changed = [];
+
+  for (const id of [
+    "name",
+    "company",
+    "email",
+    "phone",
+    "currentProcess",
+    "objective",
+    "additional",
+  ]) {
+    const element = documentRef.getElementById?.(id);
+    if (element && element.value !== "") {
+      element.value = "";
+      changed.push(id);
+    }
+  }
+
+  for (const id of ["users", "start"]) {
+    const element = documentRef.getElementById?.(id);
+    if (element && element.value !== "") {
+      element.value = "";
+      changed.push(id);
+    }
+  }
+
+  const checkboxes = Array.from(
+    documentRef.querySelectorAll?.('input[name="que_quiere_mejorar"]') ?? [],
+  );
+
+  for (const checkbox of checkboxes) {
+    if (checkbox.checked === true) {
+      checkbox.checked = false;
+      changed.push(`need:${checkbox.value}`);
+    }
+  }
+
+  const privacy = documentRef.getElementById?.("privacy");
+  if (privacy?.checked === true) {
+    privacy.checked = false;
+    changed.push("privacy");
+  }
+
+  return Object.freeze({
+    reset: true,
+    changedFields: Object.freeze(changed),
+  });
 }
 
 /**

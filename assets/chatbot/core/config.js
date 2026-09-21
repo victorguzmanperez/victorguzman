@@ -65,6 +65,14 @@ export const chatbotConfig = Object.freeze({
     maxStoredMessages: 50,
   },
 
+  conversation: {
+    /**
+     * CONV-G1: experiencia guiada por clics.
+     * false restaura el motor libre/NLU anterior sin eliminar código.
+     */
+    guidedMode: true,
+  },
+
   ui: {
     /**
      * Nunca abrir automáticamente en una visita nueva.
