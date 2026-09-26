@@ -90,7 +90,7 @@ import {
   buildDiagnosticPrefillFromState,
   resetDiagnosticFormForNewConversation,
   isDiagnosticStartAction,
-} from "./core/diagnostic-prefill.js?v=conv-g1.11";
+} from "./core/diagnostic-prefill.js?v=conv-g1.13";
 
 import {
   detectReducedMotion,
@@ -109,7 +109,7 @@ import {
 import {
   renderGuidedOptions,
   setGuidedComposerMode,
-} from "./ui/guided-conversation-renderer.js?v=conv-g1.11";
+} from "./ui/guided-conversation-renderer.js?v=conv-g1.13";
 
 
 /**
@@ -266,7 +266,7 @@ const LEGACY_CORE_MODULE_LOADERS =
   Object.freeze({
     nlu: () => import("./core/nlu.js"),
     entities: () => import("./core/entities.js"),
-    dialogueManager: () => import("./core/dialogue-manager.js?v=conv-h3.25.1"),
+    dialogueManager: () => import("./core/dialogue-manager.js?v=conv-h3.27"),
     actions: () => import("./core/actions.js?v=mob-h1.1"),
     intents: () => import("./data/intents.js"),
     knowledge: () => import("./data/knowledge.js"),
@@ -277,7 +277,7 @@ const LEGACY_CORE_MODULE_LOADERS =
 const GUIDED_CORE_MODULE_LOADERS =
   Object.freeze({
     guidedConversation: () =>
-      import("./core/guided-conversation.js?v=conv-g1.11"),
+      import("./core/guided-conversation.js?v=conv-g1.13"),
   });
 
 function activeCoreModuleLoaders() {
@@ -856,7 +856,7 @@ export function ensureChatbotStylesheet({
 
   const href =
     new URL(
-      "./chatbot.css?v=conv-g1.11",
+      "./chatbot.css?v=conv-g1.13",
       import.meta.url,
     ).href;
 

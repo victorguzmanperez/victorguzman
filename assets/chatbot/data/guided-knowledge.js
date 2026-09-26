@@ -9,6 +9,15 @@
 
 export const guidedKnowledge = Object.freeze({
   "profile": "Víctor lleva más de 20 años trabajando en tecnología, principalmente en el sector financiero. Su trayectoria empezó en desarrollo COBOL y ha evolucionado hacia datos, Business Intelligence, automatización e inteligencia artificial aplicada.",
+  "assistant": {
+    "id": "capability-deterministic-conversational-systems",
+    "title": "Asistentes guiados y flujos conversacionales",
+    "shortDescription": "Experiencia aplicada diseñando e implementando asistentes guiados deterministas mediante grafos de conversación, opciones predefinidas, multiselección, estado estructurado, navegación y handoff a formularios o acciones, sin depender de un LLM en tiempo de ejecución.",
+    "about": "Claro. Funciona mediante un recorrido guiado: tú eliges entre distintas opciones y el asistente va teniendo en cuenta lo que seleccionas para ofrecerte el siguiente paso. Así puede ayudarte a explorar una necesidad, enseñarte información relevante o llevarte al diagnóstico y al contacto con Víctor.",
+    "llm": "En esta conversación, no. El asistente no genera respuestas con un LLM: sigue recorridos y respuestas preparados de antemano. La experiencia de Víctor con inteligencia artificial es otro tema y puedes verla por separado.",
+    "agent": "No. Este asistente no toma decisiones ni actúa por su cuenta. Te guía mediante opciones y respuestas preparadas para ayudarte a encontrar la información que necesitas.",
+    "capabilities": "Aquí puedes conocer mejor a Víctor, descubrir proyectos y recursos, explorar una necesidad paso a paso y preparar la información necesaria antes de contactar con él. Si recorres una necesidad, el asistente conserva tus selecciones para resumir el caso y facilitar el diagnóstico.",
+  },
   "currentExperience": "Responsabilidad actual centrada en datos, Business Intelligence, automatización y evolución hacia IA aplicada dentro del área de Control de Mercados Financieros.",
   "firstExperience": "Inicio profesional en desarrollo bancario COBOL dentro de una Software Factory, con fuerte orientación a testing, calidad y componentes reutilizables.",
   "technologies": {

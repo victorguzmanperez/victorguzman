@@ -118,16 +118,16 @@ test(
 );
 
 test(
-  "global Knowledge catalog contains 133 items",
+  "global Knowledge catalog contains 134 items",
   () => {
     assert.equal(
       knowledgeItems.length,
-      133,
+      134,
     );
 
     assert.equal(
       knowledgeStats.total,
-      133,
+      134,
     );
   },
 );

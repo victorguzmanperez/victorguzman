@@ -6,6 +6,7 @@ import { projectKnowledge } from "../data/knowledge/projects.js";
 import { serviceKnowledge } from "../data/knowledge/services.js";
 import { solutionKnowledge } from "../data/knowledge/solutions.js";
 import { technologyKnowledge } from "../data/knowledge/technologies.js";
+import { capabilityKnowledge } from "../data/knowledge/capabilities.js";
 
 function byId(items, id) {
   return items.find((item) => item.id === id);
@@ -42,4 +43,12 @@ test("CONV-G1 technology statements are copied only from approved technology Kno
     assert.equal(guided.title, source.title);
     assert.equal(guided.shortDescription, source.shortDescription);
   }
+});
+
+
+test("CONV-G1 guided assistant capability stays aligned with protected Knowledge", () => {
+  const source = byId(capabilityKnowledge, guidedKnowledge.assistant.id);
+  assert.ok(source, guidedKnowledge.assistant.id);
+  assert.equal(guidedKnowledge.assistant.title, source.title);
+  assert.equal(guidedKnowledge.assistant.shortDescription, source.shortDescription);
 });

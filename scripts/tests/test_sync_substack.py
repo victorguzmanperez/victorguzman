@@ -25,6 +25,23 @@ class SyncTests(unittest.TestCase):
         with self.assertRaises(ValueError): sync.parse_feed(b' ' * 5_000_001)
     def test_production_path_rejected(self):
         with self.assertRaises(ValueError): sync.sync(feed(item()),sync.ROOT/'assets/chatbot/data/content/approved.json')
+
+    def test_repository_staged_file_validates_offline(self):
+        payload=sync.check_staged()
+        self.assertGreater(len(payload['articles']),0)
+
+    def test_staged_hash_tamper_is_rejected(self):
+        article=sync.parse_feed(feed(item()))[0]
+        article['change']='new'
+        article['contentHash']='0'*64
+        payload={'schemaVersion':1,'source':sync.FEED,'promotion':'Manual review required. This file is not imported by the chatbot.','articles':[article]}
+        with self.assertRaises(ValueError): sync.validate_staged_payload(payload,{'articles':[]})
+
+    def test_staged_change_mismatch_is_rejected(self):
+        article=sync.parse_feed(feed(item()))[0]
+        article['change']='unchanged'
+        payload={'schemaVersion':1,'source':sync.FEED,'promotion':'Manual review required. This file is not imported by the chatbot.','articles':[article]}
+        with self.assertRaises(ValueError): sync.validate_staged_payload(payload,{'articles':[]})
     def test_no_runtime_staged_import(self):
         for path in (sync.ROOT/'assets/chatbot').rglob('*.js'):
             self.assertNotIn('content/staged',path.read_text(encoding='utf-8'))

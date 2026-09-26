@@ -1,28 +1,39 @@
-name: Stage public Dataverso articles
+name: Validate Dataverso content
+
 on:
-  schedule:
-    - cron: '17 6 * * *'
   workflow_dispatch:
+
 permissions:
   contents: read
+
 jobs:
-  review:
+  validate:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - uses: actions/setup-node@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
-      - run: python -m unittest discover -s scripts/tests -v
-      - run: node scripts/build_content.mjs --check
-      - run: node --test assets/chatbot/tests/*.mjs
-      - run: python scripts/sync_substack.py
-      - uses: actions/upload-artifact@v4
-        with:
-          name: dataverso-pending-review
-          path: content/staged/dataverso.json
-          retention-days: 30
+          package-manager-cache: false
+
+      - name: Test Dataverso staging logic
+        run: python -m unittest discover -s scripts/tests -v
+
+      - name: Validate staged Dataverso JSON
+        run: python scripts/sync_substack.py --check-staged
+
+      - name: Validate reviewed Dataverso catalog
+        run: node scripts/build_content.mjs --check
+
+      - name: Run chatbot test suite
+        run: node --test assets/chatbot/tests/*.mjs

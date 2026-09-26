@@ -47,7 +47,7 @@ export const sources = Object.freeze([
     visibility: SOURCE_VISIBILITY.PUBLIC,
     owner: "victor",
     verified: true,
-    lastVerifiedAt: "2026-09-15",
+    lastVerifiedAt: "2026-09-26",
     topics: [
       "profile",
       "services",
@@ -56,6 +56,8 @@ export const sources = Object.freeze([
       "business-intelligence",
       "automation",
       "ai",
+      "conversational-systems",
+      "deterministic-chatbot",
       "contact",
     ],
   }),
@@ -408,10 +410,15 @@ export const sources = Object.freeze([
     verified: true,
 
     lastVerifiedAt:
-      "2026-09-15",
+      "2026-09-26",
 
     topics: [
       "chatbot",
+      "conversational-systems",
+      "deterministic-chatbot",
+      "rule-based-conversation",
+      "guided-conversation",
+      "conversation-graph",
       "privacy",
       "diagnostic",
       "booking",

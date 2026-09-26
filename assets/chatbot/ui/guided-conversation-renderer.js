@@ -1,7 +1,7 @@
 /** CONV-G1 — click-only guided conversation renderer. */
 
 import { scrollConversationToEnd } from "./conversation-renderer.js";
-import { GUIDED_NODE_MODE } from "../core/guided-conversation.js?v=conv-g1.11";
+import { GUIDED_NODE_MODE } from "../core/guided-conversation.js?v=conv-g1.13";
 
 function clearGuidedOptions(messagesElement) {
   const existing = messagesElement?.querySelector?.("[data-vg-guided-options]");

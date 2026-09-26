@@ -883,6 +883,7 @@ function composeCapabilitiesOverview(detail) {
   const automationAiIds = [
     "capability-reporting-automation",
     "capability-process-automation",
+    "capability-deterministic-conversational-systems",
     "capability-document-data-extraction",
     "capability-ai-assisted-analysis",
     "capability-web-data-collection",
@@ -909,7 +910,7 @@ function composeCapabilitiesOverview(detail) {
   ) {
     return {
       text:
-        "Las capacidades documentadas de Víctor se concentran en Business Intelligence y análisis de datos, automatización de procesos e IA aplicada, y en la entrega de soluciones desde el análisis funcional hasta testing, soporte y coordinación con negocio. Puedes profundizar por área.",
+        "Las capacidades documentadas de Víctor se concentran en Business Intelligence y análisis de datos, automatización de procesos, asistentes conversacionales deterministas e IA aplicada, y en la entrega de soluciones desde el análisis funcional hasta testing, soporte y coordinación con negocio. Puedes profundizar por área.",
       items,
       knowledgeIds:
         items.map(
@@ -981,7 +982,7 @@ function composeCapabilitiesOverview(detail) {
   const text =
     (
       "Las capacidades documentadas de Víctor abarcan Business Intelligence, análisis de datos, transformación y consolidación de datos, calidad y trazabilidad; " +
-      "dashboards, automatización de reporting y automatización de procesos; análisis funcional y de requisitos, puente negocio-tecnología, gestión de proyectos, testing, UAT y soporte; " +
+      "dashboards, automatización de reporting, automatización de procesos y asistentes conversacionales deterministas; análisis funcional y de requisitos, puente negocio-tecnología, gestión de proyectos, testing, UAT y soporte; " +
       "y áreas aplicadas como reglas y scoring, modelado jerárquico, análisis financiero, IA asistida, recopilación web y migración de datos. " +
       "También constan liderazgo técnico, optimización de rendimiento y coordinación con negocio y equipos. No todas tienen el mismo tipo de evidencia."
     );

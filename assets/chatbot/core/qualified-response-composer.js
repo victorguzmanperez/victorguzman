@@ -696,6 +696,90 @@ function deriveExplicitTechnologyEvidenceQualification(
 }
 
 
+function deriveExplicitCapabilityEvidenceQualification(
+  item,
+) {
+  if (
+    item?.type !==
+      "capability"
+  ) {
+    return null;
+  }
+
+
+  const evidence =
+    getFactValue(
+      item,
+      "evidence-types",
+    );
+
+
+  if (
+    !Array.isArray(
+      evidence,
+    )
+  ) {
+    return null;
+  }
+
+
+  if (
+    evidence.includes(
+      EXPERIENCE_EVIDENCE
+        .NO_EVIDENCE,
+    )
+  ) {
+    return {
+      reason:
+        QUALIFIED_RESPONSE_REASON
+          .NO_EVIDENCE,
+    };
+  }
+
+
+  if (
+    evidence.some(
+      (value) =>
+        [
+          EXPERIENCE_EVIDENCE
+            .PROFESSIONAL_CURRENT,
+
+          EXPERIENCE_EVIDENCE
+            .PROFESSIONAL_HISTORICAL,
+
+          EXPERIENCE_EVIDENCE
+            .PROJECT_APPLIED,
+        ].includes(
+          value,
+        ),
+    )
+  ) {
+    return {
+      reason:
+        QUALIFIED_RESPONSE_REASON
+          .DIRECT_EXPERIENCE,
+    };
+  }
+
+
+  if (
+    evidence.includes(
+      EXPERIENCE_EVIDENCE
+        .FORMAL_TRAINING,
+    )
+  ) {
+    return {
+      reason:
+        QUALIFIED_RESPONSE_REASON
+          .TRAINING_ONLY,
+    };
+  }
+
+
+  return null;
+}
+
+
 function deriveProfessionalTemporalQualification(
   item,
   userText,
@@ -877,6 +961,9 @@ export function resolveQualifiedResponseReason(
       item,
     ) ??
     deriveExplicitTechnologyEvidenceQualification(
+      item,
+    ) ??
+    deriveExplicitCapabilityEvidenceQualification(
       item,
     ) ??
     deriveProfessionalTemporalQualification(
@@ -1384,6 +1471,14 @@ function relevantFactIds(
 
       keys.add(
         "evidence-summary",
+      );
+
+      keys.add(
+        "evidence-types",
+      );
+
+      keys.add(
+        "capability-summary",
       );
 
       break;

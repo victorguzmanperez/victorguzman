@@ -644,6 +644,78 @@ export const capabilityKnowledge =
 
     createCapability({
       id:
+        "capability-deterministic-conversational-systems",
+
+      title:
+        "Asistentes guiados y flujos conversacionales",
+
+      aliases: [
+        "asistente guiado",
+        "asistentes guiados",
+        "asistente conversacional",
+        "asistentes conversacionales",
+        "asistente conversacional determinista",
+        "asistente del portfolio",
+        "chatbot del portfolio",
+        "sistema conversacional determinista",
+        "chatbot basado en reglas",
+        "chatbots basados en reglas",
+        "chatbot determinista",
+        "flujos conversacionales guiados",
+        "grafo conversacional",
+        "conversation graph",
+        "preguntas y respuestas predefinidas",
+        "preguntas y respuestas precargadas",
+        "opciones predefinidas",
+        "asistente sin llm",
+        "asistente sin ia generativa",
+        "rule based chatbot",
+        "deterministic chatbot",
+      ],
+
+      summary:
+        "Experiencia aplicada diseñando e implementando asistentes guiados deterministas mediante grafos de conversación, opciones predefinidas, multiselección, estado estructurado, navegación y handoff a formularios o acciones, sin depender de un LLM en tiempo de ejecución.",
+
+      domains: [
+        "conversation-design",
+        "guided-flows",
+        "state-management",
+        "forms-and-handoff",
+        "testing",
+      ],
+
+      evidenceTypes: [
+        EXPERIENCE_EVIDENCE
+          .PROJECT_APPLIED,
+      ],
+
+      sources: [
+        "source-portfolio-home",
+        "source-user-confirmed-chatbot-design",
+      ],
+
+      limitations: [
+        {
+          type:
+            LIMITATION_TYPE.QUALIFICATION,
+
+          claim:
+            "La evidencia actual corresponde al asistente guiado construido para este portfolio y no debe presentarse como experiencia profesional con agentes autónomos de IA.",
+        },
+
+        {
+          type:
+            LIMITATION_TYPE.QUALIFICATION,
+
+          claim:
+            "La versión pública actual no interpreta texto libre: navega mediante opciones predefinidas dentro de un Conversation Graph y no necesita un LLM o agente generativo en tiempo de ejecución.",
+        },
+      ],
+    }),
+
+
+    createCapability({
+      id:
         "capability-document-data-extraction",
 
       title:

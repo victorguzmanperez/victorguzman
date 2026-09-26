@@ -23,6 +23,7 @@ const certificationKnowledge = guidedKnowledge.certification;
 const profileKnowledge = [
   { id: "profile-victor", shortDescription: guidedKnowledge.profile },
 ];
+const assistantKnowledge = guidedKnowledge.assistant;
 const catalog = guidedKnowledge.catalog;
 
 
@@ -259,14 +260,14 @@ function serviceSummary(id) {
 
 function solutionSummary(id) {
   const summaries = {
-    "solution-data-consolidation-automation": "Esta opción encaja cuando la información llega desde varios archivos o fuentes y hay que unirla, transformarla o revisarla a mano. El objetivo es centralizar ese flujo y reducir trabajo repetitivo y errores.",
-    "solution-reporting-dashboard-automation": "Encaja cuando preparar o actualizar informes exige repetir cada vez los mismos pasos. La idea es estructurar la preparación y transformación de datos para que el reporting y los dashboards se actualicen con menos intervención manual.",
-    "solution-evaluation-scoring-model": "Pensada para procesos en los que hay criterios, jerarquías, pesos o reglas que deben convertirse en una puntuación explicable. El objetivo es que el modelo pueda probarse, revisarse y trazarse.",
-    "solution-document-data-extraction": "Útil cuando parte de la información está encerrada en documentos y alguien tiene que transcribirla o prepararla antes de analizarla. Se busca extraerla y estructurarla de forma consistente.",
-    "solution-data-quality-traceability": "Pensada para procesos en los que los resultados necesitan controles claros. Se añaden validaciones y trazabilidad para detectar inconsistencias y poder explicar de dónde sale cada dato o cálculo.",
-    "solution-web-audit-scoring-automation": "Encaja cuando hay que revisar muchas webs con los mismos criterios. La recopilación se automatiza, se aplican reglas de scoring y los resultados se presentan de forma comparable.",
-    "solution-financial-analysis-monitoring": "Pensada para reunir y seguir datos financieros de forma estructurada, facilitando comparación, control de riesgo y análisis mediante modelos y cuadros de mando. La información es analítica, no asesoramiento financiero.",
-    "solution-ai-opportunity-assessment": "Antes de automatizar con IA, se revisan el proceso, el problema, los datos disponibles y el resultado esperado para identificar casos de uso con sentido y descartar los que no aporten valor.",
+    "solution-data-consolidation-automation": "Si la información llega desde varios archivos o fuentes y hay que unirla, transformarla o revisarla a mano, este enfoque puede ayudarte a centralizar el flujo y reducir trabajo repetitivo y errores.",
+    "solution-reporting-dashboard-automation": "Si preparar o actualizar informes obliga a repetir siempre los mismos pasos, se puede estructurar la preparación de datos para que el reporting y los dashboards necesiten menos trabajo manual.",
+    "solution-evaluation-scoring-model": "Si trabajas con criterios, jerarquías, pesos o reglas que deben convertirse en una puntuación, la idea es construir un modelo que pueda probarse, revisarse y explicarse con claridad.",
+    "solution-document-data-extraction": "Si parte de la información está dentro de documentos y alguien tiene que transcribirla o prepararla antes de analizarla, se puede extraer y estructurar de forma consistente para reducir ese trabajo manual.",
+    "solution-data-quality-traceability": "Si cuesta confiar en los resultados o explicar de dónde sale cada dato, se pueden añadir validaciones y trazabilidad para detectar inconsistencias y revisar mejor los cálculos.",
+    "solution-web-audit-scoring-automation": "Si hay que revisar muchas webs con los mismos criterios, se puede automatizar la recopilación, aplicar las mismas reglas de scoring y presentar los resultados de forma comparable.",
+    "solution-financial-analysis-monitoring": "Si quieres reunir y seguir datos financieros de forma estructurada, se pueden organizar para facilitar la comparación, el control de riesgo y el análisis mediante modelos y cuadros de mando. La información es analítica, no asesoramiento financiero.",
+    "solution-ai-opportunity-assessment": "Si estás pensando en usar IA, primero conviene revisar el proceso, el problema, los datos disponibles y el resultado que esperas. Así es más fácil detectar dónde puede aportar valor y dónde no hace falta.",
   };
   return summaries[id] ?? "Esta opción busca estructurar el problema y reducir trabajo innecesario sin perder control ni trazabilidad.";
 }
@@ -327,6 +328,7 @@ function buildStaticGraph() {
       makeOption("home-projects", "Ver proyectos", "projects.menu"),
       makeOption("home-services", "Servicios y soluciones", "services.menu"),
       makeOption("home-resources", "Artículos y recursos", "resources.menu"),
+      makeOption("home-assistant", "Sobre este asistente", "assistant.menu"),
       makeOption("home-contact", "Contactar con Víctor", "contact.menu"),
       makeOption("home-diagnostic", "Completar diagnóstico", null, {
         action: GUIDED_ACTION_KIND.DIAGNOSTIC,
@@ -336,10 +338,70 @@ function buildStaticGraph() {
     { title: "¿En qué te puedo ayudar?", section: "home" },
   );
 
+  graph["assistant.menu"] = node(
+    "assistant.menu",
+    GUIDED_NODE_MODE.SINGLE,
+    "Si tienes curiosidad por saber cómo funciona este asistente, aquí puedes conocerlo un poco mejor.",
+    [
+      makeOption("assistant-how", "¿Cómo funciona?", "assistant.how"),
+      makeOption("assistant-llm", "¿Usa IA o un LLM?", "assistant.llm"),
+      makeOption("assistant-can", "¿Qué puede hacer?", "assistant.capabilities"),
+      makeOption("assistant-agent", "¿Es un agente de IA?", "assistant.agent"),
+    ],
+    { title: "Sobre este asistente", section: "assistant" },
+  );
+
+  graph["assistant.how"] = node(
+    "assistant.how",
+    GUIDED_NODE_MODE.INFO,
+    assistantKnowledge.about,
+    [
+      makeOption("assistant-how-capabilities", "¿Qué puede hacer?", "assistant.capabilities"),
+      makeOption("assistant-how-llm", "¿Usa IA?", "assistant.llm"),
+    ],
+    { section: "assistant" },
+  );
+
+  graph["assistant.llm"] = node(
+    "assistant.llm",
+    GUIDED_NODE_MODE.INFO,
+    assistantKnowledge.llm,
+    [
+      makeOption("assistant-llm-how", "¿Cómo funciona?", "assistant.how"),
+      makeOption("assistant-llm-agent", "¿Es un agente de IA?", "assistant.agent"),
+    ],
+    { section: "assistant" },
+  );
+
+  graph["assistant.capabilities"] = node(
+    "assistant.capabilities",
+    GUIDED_NODE_MODE.INFO,
+    assistantKnowledge.capabilities,
+    [
+      makeOption("assistant-cap-process", "Explorar mi caso", "process.areas"),
+      makeOption("assistant-cap-diagnostic", "Completar diagnóstico", null, {
+        action: GUIDED_ACTION_KIND.DIAGNOSTIC,
+        target: DIAGNOSTIC_PAGE,
+      }),
+    ],
+    { section: "assistant" },
+  );
+
+  graph["assistant.agent"] = node(
+    "assistant.agent",
+    GUIDED_NODE_MODE.INFO,
+    assistantKnowledge.agent,
+    [
+      makeOption("assistant-agent-how", "¿Cómo funciona?", "assistant.how"),
+      makeOption("assistant-agent-ai", "Experiencia con IA", "victor.tech.ai"),
+    ],
+    { section: "assistant" },
+  );
+
   graph["process.areas"] = node(
     "process.areas",
     GUIDED_NODE_MODE.MULTI,
-    "Empecemos por identificar qué quieres mejorar. Puedes marcar una o varias opciones.",
+    "Vamos a situar el caso. ¿Qué te gustaría mejorar? Puedes marcar una o varias opciones.",
     Object.entries(LABELS.processAreas).map(([value, label]) => makeOption(`area:${value}`, label, null, { value })),
     { selectionKey: "processAreas", next: "process.current", section: "process", minSelections: 1 },
   );
@@ -347,7 +409,7 @@ function buildStaticGraph() {
   graph["process.current"] = node(
     "process.current",
     GUIDED_NODE_MODE.MULTI,
-    "¿Cómo se gestiona hoy ese trabajo? Marca todo lo que encaje; no hace falta elegir un único cuello de botella.",
+    "¿Cómo se hace hoy ese trabajo? Marca todo lo que encaje; puedes elegir varias opciones.",
     Object.entries(LABELS.currentWork).map(([value, label]) => makeOption(`current:${value}`, label, null, { value })),
     { selectionKey: "currentWork", next: "process.frequency", section: "process", minSelections: 1 },
   );
@@ -355,7 +417,7 @@ function buildStaticGraph() {
   graph["process.frequency"] = node(
     "process.frequency",
     GUIDED_NODE_MODE.SINGLE,
-    "Perfecto. ¿Con qué frecuencia se repite este proceso?",
+    "Bien. ¿Con qué frecuencia se repite este proceso?",
     Object.entries(LABELS.frequency).map(([value, label]) => makeOption(`frequency:${value}`, label, "process.users", { value, selectionKey: "frequency" })),
     { section: "process" },
   );
@@ -363,7 +425,7 @@ function buildStaticGraph() {
   graph["process.users"] = node(
     "process.users",
     GUIDED_NODE_MODE.SINGLE,
-    "¿Cuántas personas realizan o utilizan este proceso?",
+    "¿Cuántas personas participan en este proceso o utilizan su resultado?",
     Object.entries(LABELS.users).map(([value, label]) => makeOption(`users:${value}`, label, "process.tools", { value, selectionKey: "users" })),
     { section: "process" },
   );
@@ -371,7 +433,7 @@ function buildStaticGraph() {
   graph["process.tools"] = node(
     "process.tools",
     GUIDED_NODE_MODE.MULTI,
-    "¿Qué herramientas intervienen normalmente? Puedes marcar varias.",
+    "¿Qué herramientas intervienen en el proceso? Puedes marcar varias.",
     Object.entries(LABELS.tools).map(([value, label]) => makeOption(`tool:${value}`, label, null, { value })),
     { selectionKey: "tools", next: "process.pain", section: "process", minSelections: 1 },
   );
@@ -379,7 +441,7 @@ function buildStaticGraph() {
   graph["process.pain"] = node(
     "process.pain",
     GUIDED_NODE_MODE.MULTI,
-    "¿Qué es lo que más te preocupa del proceso? Puedes elegir más de una opción.",
+    "¿Qué te está dando más problemas? Puedes elegir más de una opción.",
     Object.entries(LABELS.painPoints).map(([value, label]) => makeOption(`pain:${value}`, label, null, { value })),
     { selectionKey: "painPoints", next: "process.goals", section: "process", minSelections: 1 },
   );
@@ -387,7 +449,7 @@ function buildStaticGraph() {
   graph["process.goals"] = node(
     "process.goals",
     GUIDED_NODE_MODE.MULTI,
-    "¿Qué resultado te gustaría conseguir principalmente?",
+    "¿Qué te gustaría conseguir? Puedes marcar varias opciones.",
     Object.entries(LABELS.goals).map(([value, label]) => makeOption(`goal:${value}`, label, null, { value })),
     { selectionKey: "goals", next: "process.timeframe", section: "process", minSelections: 1 },
   );
@@ -395,7 +457,7 @@ function buildStaticGraph() {
   graph["process.timeframe"] = node(
     "process.timeframe",
     GUIDED_NODE_MODE.SINGLE,
-    "Última pregunta para situar el caso: ¿cuándo te gustaría empezar?",
+    "Y una última pregunta para situar el caso: ¿cuándo te gustaría empezar?",
     Object.entries(LABELS.timeframe).map(([value, label]) => makeOption(`timeframe:${value}`, label, "process.summary", { value, selectionKey: "timeframe" })),
     { section: "process" },
   );
@@ -469,7 +531,7 @@ function buildStaticGraph() {
   graph["victor.technologies"] = node(
     "victor.technologies",
     GUIDED_NODE_MODE.SINGLE,
-    "A lo largo de su trayectoria ha trabajado con Power BI, Excel, Power Query, SQL, Oracle y COBOL, y más recientemente ha ido incorporando Python. En los últimos años también está sumando herramientas de IA y automatización como Microsoft Copilot y Power Automate. Si quieres, podemos entrar en alguna en concreto.",
+    "A lo largo de su trayectoria ha trabajado con Power BI, Excel, Power Query, SQL, Oracle y COBOL, y más recientemente ha ido incorporando Python. En los últimos años también está sumando herramientas de IA y automatización como Microsoft Copilot y Power Automate. Si quieres, elige una y te cuento algo más.",
     [
       makeOption("tech-powerbi", "Power BI", "victor.tech.powerbi"),
       makeOption("tech-excel", "Excel / Power Query", "victor.tech.excel"),
@@ -501,7 +563,7 @@ function buildStaticGraph() {
     makeOption("ai-service", "Ver servicio de IA aplicada", "service:service-ai-process-analysis"),
     makeOption("ai-projects", "Ver proyectos", "projects.menu"),
   ], { section: "victor" });
-  graph["victor.tech.qlik"] = node("victor.tech.qlik", GUIDED_NODE_MODE.INFO, "Qlik no forma parte de su experiencia profesional actual: no tiene experiencia confirmada con QlikView, Qlik Sense o NPrinting. Si buscas específicamente ese stack, conviene tenerlo en cuenta.", [], { section: "victor" });
+  graph["victor.tech.qlik"] = node("victor.tech.qlik", GUIDED_NODE_MODE.INFO, "Qlik no forma parte de su experiencia profesional actual: no tiene experiencia confirmada con QlikView, Qlik Sense o NPrinting. Si buscas específicamente esas herramientas, conviene tenerlo en cuenta.", [], { section: "victor" });
   graph["victor.powerbi"] = graph["victor.tech.powerbi"];
   graph["victor.automation-ai"] = graph["victor.tech.ai"];
 
@@ -544,7 +606,7 @@ function buildStaticGraph() {
   graph["services.menu"] = node(
     "services.menu",
     GUIDED_NODE_MODE.SINGLE,
-    "Si buscas una solución concreta, puedo enseñarte las áreas en las que Víctor trabaja y ayudarte a identificar cuál encaja mejor con tu necesidad.",
+    "Si tienes una necesidad concreta, aquí puedes ver las áreas en las que trabaja Víctor y explorar cuál se parece más a tu caso.",
     [
       ...serviceKnowledge.map((service) => makeOption(`service-menu:${service.id}`, service.title, `service:${service.id}`)),
       makeOption("services-solutions", "Ver soluciones por problema", "solutions.menu"),
@@ -562,7 +624,7 @@ function buildStaticGraph() {
   graph["solutions.menu"] = node(
     "solutions.menu",
     GUIDED_NODE_MODE.SINGLE,
-    "Elige el tipo de solución que más se parece a lo que necesitas.",
+    "¿Cuál de estas opciones se parece más a lo que necesitas?",
     solutionKnowledge.map((solution) => makeOption(`solution-menu:${solution.id}`, solution.title, `solution:${solution.id}`)),
     { section: "services" },
   );
@@ -577,7 +639,7 @@ function buildStaticGraph() {
   graph["resources.menu"] = node(
     "resources.menu",
     GUIDED_NODE_MODE.SINGLE,
-    "Aquí puedes explorar DataVerso y otros recursos públicos de Víctor sobre datos, Power BI, Power Query, finanzas, inversión y aprendizaje.",
+    "Si quieres seguir explorando, aquí tienes DataVerso y otros recursos públicos de Víctor sobre datos, Power BI, Power Query, finanzas, inversión y aprendizaje.",
     [
       makeOption("resources-dataverso", "Dataverso", "resources.dataverso"),
       makeOption("resources-powerbi", "Power BI", "resources.power-bi"),
@@ -599,9 +661,9 @@ function buildStaticGraph() {
   );
   graph["resources.power-bi"] = resourceNode("resources.power-bi", "Si te interesa Power BI, aquí tienes artículos públicos de Víctor sobre fundamentos, modelado, conexión a datos y uso práctico de la herramienta.", "power-bi");
   graph["resources.power-query"] = resourceNode("resources.power-query", "Aquí puedes ver contenidos centrados en Power Query y en la preparación y transformación de datos.", "power-query");
-  graph["resources.finance"] = resourceNode("resources.finance", "Aquí reúne contenido divulgativo sobre organización financiera, aprendizaje y libros relacionados. Es contenido educativo y no sustituye asesoramiento profesional.", "finance");
+  graph["resources.finance"] = resourceNode("resources.finance", "Aquí encontrarás contenido divulgativo sobre organización financiera, aprendizaje y libros relacionados. Es contenido educativo y no sustituye asesoramiento profesional.", "finance");
   graph["resources.investing"] = resourceNode("resources.investing", "Aquí encontrarás experiencias y contenidos divulgativos sobre inversión. No son recomendaciones personalizadas de compra o venta.", "investing");
-  graph["resources.learning"] = resourceNode("resources.learning", "Aquí aparecen contenidos y recursos sobre aprendizaje, hábitos, mentalidad y evolución personal.", "learning");
+  graph["resources.learning"] = resourceNode("resources.learning", "Aquí encontrarás contenidos y recursos sobre aprendizaje, hábitos, mentalidad y evolución personal.", "learning");
   graph["resources.books"] = node(
     "resources.books",
     GUIDED_NODE_MODE.INFO,
@@ -615,7 +677,7 @@ function buildStaticGraph() {
   graph["contact.menu"] = node(
     "contact.menu",
     GUIDED_NODE_MODE.SINGLE,
-    "Si quieres dar el siguiente paso, puedes contarle tu caso mediante el diagnóstico, reservar una reunión inicial o consultar sus canales de contacto.",
+    "Si quieres hablar con Víctor, puedes preparar primero tu caso con el diagnóstico, reservar una reunión inicial o consultar sus datos de contacto.",
     [
       makeOption("contact-diagnostic", "Completar diagnóstico", null, { action: GUIDED_ACTION_KIND.DIAGNOSTIC, target: DIAGNOSTIC_PAGE }),
       makeOption("contact-calendly", "Reservar reunión inicial", null, { action: GUIDED_ACTION_KIND.CALENDLY, target: CALENDLY_URL }),
@@ -675,7 +737,7 @@ function buildStaticGraph() {
   graph["feedback.negative"] = node(
     "feedback.negative",
     GUIDED_NODE_MODE.INFO,
-    "Gracias por decírmelo. Tu valoración ayuda a detectar qué debe mejorar el asistente.",
+    "Gracias por decírmelo. Esa valoración ayuda a detectar qué partes del asistente conviene mejorar.",
     [makeOption("feedback-negative-close", "Cerrar conversación", null, { action: GUIDED_ACTION_KIND.CLOSE })],
     { section: "closing", terminal: true },
   );
@@ -730,8 +792,9 @@ function processSummary(selections) {
   const tools = labelList("tools", selections.tools);
   const goals = labelList("goals", selections.goals);
 
-  const first = areas.length > 0
-    ? `Por lo que has indicado, quieres mejorar ${naturalJoin(areas)}.`
+  const naturalAreas = areas.map((value) => value ? `${value.charAt(0).toLowerCase()}${value.slice(1)}` : value);
+  const first = naturalAreas.length > 0
+    ? `Por lo que has marcado, quieres mejorar ${naturalJoin(naturalAreas)}.`
     : "Por lo que has indicado, quieres revisar un proceso de trabajo.";
 
   const specificCurrent = currentValues
@@ -742,8 +805,8 @@ function processSummary(selections) {
   let second = "";
   if (currentValues.includes("mostly_manual")) {
     second = specificCurrent.length > 0
-      ? `Has indicado que prácticamente todo el proceso es manual; además, ${naturalJoin(specificCurrent)}.`
-      : "Has indicado que prácticamente todo el proceso es manual.";
+      ? `Ahora mismo, prácticamente todo el proceso es manual; además, ${naturalJoin(specificCurrent)}.`
+      : "Ahora mismo, prácticamente todo el proceso es manual.";
   } else if (specificCurrent.length > 0) {
     second = `Ahora mismo ${naturalJoin(specificCurrent)}.`;
   }
@@ -762,7 +825,7 @@ function processSummary(selections) {
     second,
     third,
     fourth,
-    "Con este contexto ya puedo orientarte sobre el siguiente paso sin obligarte a elegir un único cuello de botella.",
+    "Con esto ya tengo una buena idea del caso. Ahora puedes ver una posible solución, revisar un proyecto relacionado o pasar al diagnóstico.",
   ].filter(Boolean).join(" ");
 }
 
@@ -812,14 +875,14 @@ function hasDiagnosticPrefillContext(selections) {
 function diagnosticHandoffMessage(selections) {
   const hasContext = hasDiagnosticPrefillContext(selections);
   const opening = hasContext
-    ? "Perfecto. Con las respuestas que has seleccionado he preparado un borrador del diagnóstico para ahorrarte trabajo."
-    : "Te he llevado al diagnóstico para que puedas contar tu caso con algo más de detalle.";
+    ? "Perfecto. Con lo que has seleccionado ya he dejado preparado un borrador del diagnóstico para ahorrarte trabajo."
+    : "Te llevo al diagnóstico para que puedas contar tu caso con algo más de detalle.";
 
   const review = hasContext
-    ? "Revisa los campos que ya aparecen informados, corrige lo que necesites y completa cualquier dato que falte antes de enviarlo."
-    : "Completa el formulario, revisa los datos antes de enviarlo y añade cualquier información que consideres útil.";
+    ? "Revisa lo que ya aparece rellenado, cambia lo que necesites y completa cualquier dato que falte antes de enviarlo."
+    : "Completa el formulario, revisa los datos antes de enviarlo y añade cualquier información que te parezca útil.";
 
-  return `${opening} ${review} La aceptación de privacidad no se marca automáticamente: esa decisión siempre te corresponde a ti. Cuando lo envíes, Víctor recibirá la información para revisar tu caso.`;
+  return `${opening} ${review} La casilla de privacidad queda sin marcar para que la revises y decidas tú si la aceptas. Cuando envíes el formulario, Víctor recibirá la información para revisar tu caso.`;
 }
 
 function dynamicMessage(nodeId, selections) {

@@ -85,6 +85,11 @@ import {
 } from "./qualified-response-composer.js";
 
 import {
+  detectAssistantKnowledgeRequest,
+  composeAssistantKnowledgeResponse,
+} from "./assistant-architecture-response-composer.js?v=conv-h3.27";
+
+import {
   composeFallbackResponse,
 } from "./fallback-response-composer.js";
 
@@ -2374,6 +2379,42 @@ export function resolveDialogueDecision(
     });
   }
 
+  /* ========================================================
+   * CONV-H3.27 — SELF-KNOWLEDGE / ARCHITECTURE
+   *
+   * Preguntas sobre el propio asistente deben ganar al planner y
+   * a la entidad IA. Así “¿el chatbot usa IA?” no se transforma
+   * en una respuesta sobre la experiencia de Víctor con IA.
+   * ========================================================
+   */
+  const assistantKnowledgeRequest =
+    detectAssistantKnowledgeRequest(text);
+
+  if (assistantKnowledgeRequest) {
+    const preparedResponse =
+      composeAssistantKnowledgeResponse({
+        request: assistantKnowledgeRequest,
+        intent: effectiveIntent(nluAnalysis),
+        context,
+      });
+
+    if (preparedResponse) {
+      return freezeDecision({
+        kind: DIALOGUE_DECISION_KIND.ROUTE,
+        route: DIALOGUE_ROUTE.KNOWLEDGE_DIRECT,
+        priority: DIALOGUE_ROUTE_PRIORITY.KNOWLEDGE_DIRECT,
+        intent: effectiveIntent(nluAnalysis),
+        reason: "assistant_self_knowledge",
+        analysis: nluAnalysis,
+        metadata: {
+          knowledgeId: "capability-deterministic-conversational-systems",
+          assistantKnowledgeRequest,
+          preparedResponse,
+        },
+      });
+    }
+  }
+
   const planned = planConversation(text, context);
   if (planned) return freezeDecision({kind:DIALOGUE_DECISION_KIND.ROUTE,
     route:planned.route==='knowledge'?DIALOGUE_ROUTE.KNOWLEDGE_DIRECT:DIALOGUE_ROUTE.PROBLEM_FLOW,
@@ -2495,6 +2536,12 @@ export function resolveDialogueDecision(
       [KNOWLEDGE_TYPE.CERTIFICATION],
     );
 
+  const capability =
+    explicitKnowledgeMention(
+      text,
+      [KNOWLEDGE_TYPE.CAPABILITY],
+    );
+
   if (
     certification &&
     !overviewTopic
@@ -2509,6 +2556,47 @@ export function resolveDialogueDecision(
       metadata: { knowledgeId: certification.id },
     });
   }
+
+  if (
+    capability &&
+    !overviewTopic &&
+    shouldUseQualifiedResponse(
+      text,
+      capability,
+    )
+  ) {
+    return freezeDecision({
+      kind:
+        DIALOGUE_DECISION_KIND
+          .ROUTE,
+
+      route:
+        DIALOGUE_ROUTE
+          .KNOWLEDGE_DIRECT,
+
+      priority:
+        DIALOGUE_ROUTE_PRIORITY
+          .KNOWLEDGE_DIRECT,
+
+      intent:
+        effectiveIntent(
+          nluAnalysis,
+        ) ??
+        INTENT_IDS.EXPERIENCE,
+
+      reason:
+        "capability_entity_first",
+
+      analysis:
+        nluAnalysis,
+
+      metadata: {
+        knowledgeId:
+          capability.id,
+      },
+    });
+  }
+
 
   if (
     technology &&
@@ -3058,6 +3146,42 @@ function composeDirectKnowledgeForDecision(
     return composeQualifiedResponse({ userText, knowledgeId: technology.id, intent, context });
   }
 
+  const routedKnowledgeItem =
+    getKnowledgeById(
+      decision.metadata
+        ?.knowledgeId ??
+        "",
+    );
+
+  if (
+    routedKnowledgeItem
+      ?.type ===
+        KNOWLEDGE_TYPE
+          .CAPABILITY
+  ) {
+    if (
+      shouldUseQualifiedResponse(
+        userText,
+        routedKnowledgeItem,
+      )
+    ) {
+      return composeQualifiedResponse({
+        userText,
+        knowledgeId:
+          routedKnowledgeItem.id,
+        intent,
+        context,
+      });
+    }
+
+    return composeKnowledgeSummaryResponse({
+      knowledgeId:
+        routedKnowledgeItem.id,
+      intent,
+      context,
+    });
+  }
+
   /* ========================================================
    * PROFILE
    * ========================================================
@@ -3231,6 +3355,9 @@ function composeDirectKnowledgeForDecision(
 
         KNOWLEDGE_TYPE
           .PROJECT,
+
+        KNOWLEDGE_TYPE
+          .CAPABILITY,
       ],
     );
 

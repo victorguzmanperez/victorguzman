@@ -1024,7 +1024,7 @@ test(
 
     assert.match(
       first.href,
-      /chatbot\.css\?v=conv-g1\.11$/,
+      /chatbot\.css\?v=conv-g1\.13$/,
     );
 
     assert.equal(

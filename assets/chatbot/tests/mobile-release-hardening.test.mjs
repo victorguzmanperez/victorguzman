@@ -30,7 +30,7 @@ test("MOB-H1 release entrypoints bust cache for stylesheet and chatbot", () => {
   for (const relative of pages) {
     const html = fs.readFileSync(path.join(root, relative), "utf8");
     assert.match(html, /styles\.css\?v=mob-h1\.1/);
-    assert.match(html, /chatbot\.js\?v=conv-g1\.12/);
+    assert.match(html, /chatbot\.js\?v=conv-g1\.13/);
   }
 });
 

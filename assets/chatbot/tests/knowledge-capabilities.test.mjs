@@ -204,6 +204,53 @@ test(
 
 
 test(
+  "deterministic conversational systems is project-backed and explicitly not an AI-agent claim",
+  () => {
+    const item =
+      getCapabilityById(
+        "capability-deterministic-conversational-systems",
+      );
+
+    assert.deepEqual(
+      factValue(
+        item,
+        "evidence-types",
+      ),
+      [
+        EXPERIENCE_EVIDENCE
+          .PROJECT_APPLIED,
+      ],
+    );
+
+    assert.equal(
+      item.aliases.includes(
+        "agentes",
+      ),
+      false,
+    );
+
+    assert.ok(
+      item.limitations.some(
+        (limitation) =>
+          /agentes autónomos de IA/i.test(
+            limitation.claim,
+          ),
+      ),
+    );
+
+    assert.ok(
+      item.limitations.some(
+        (limitation) =>
+          /LLM.*tiempo de ejecución/i.test(
+            limitation.claim,
+          ),
+      ),
+    );
+  },
+);
+
+
+test(
   "web data collection is project-backed",
   () => {
     const item =

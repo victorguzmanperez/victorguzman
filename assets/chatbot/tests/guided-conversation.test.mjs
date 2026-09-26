@@ -45,7 +45,7 @@ function continueMulti(state) {
   return result.state;
 }
 
-test("CONV-G1 starts at a click-only home with the seven top-level routes", () => {
+test("CONV-G1 starts at a click-only home with the eight top-level routes", () => {
   const state = createGuidedState();
   const view = getGuidedView(state);
   assert.equal(view.id, GUIDED_HOME_NODE_ID);
@@ -63,6 +63,7 @@ test("CONV-G1 starts at a click-only home with the seven top-level routes", () =
       "Ver proyectos",
       "Servicios y soluciones",
       "Artículos y recursos",
+      "Sobre este asistente",
       "Contactar con Víctor",
       "Completar diagnóstico",
     ],
@@ -150,7 +151,7 @@ test("CONV-G1 summary reflects the whole process and never invents a single bott
   assert.equal(view.id, "process.summary");
   assert.match(view.message, /proceso|procesos manuales/i);
   assert.match(view.message, /tú solo/i);
-  assert.match(view.message, /sin obligarte a elegir un único cuello de botella/i);
+  assert.match(view.message, /Con esto ya tengo una buena idea del caso/i);
   assert.doesNotMatch(view.message, /el cuello de botella (?:es|está)/i);
 });
 
@@ -203,9 +204,9 @@ test("CONV-G1.1 diagnostic handoff is terminal, preserves facts and exposes only
   assert.equal(handoff.currentNode, "diagnostic.handoff");
   assert.deepEqual(handoff.history, []);
   assert.deepEqual(handoff.selections.processAreas, ["manual-process", "excel-files"]);
-  assert.match(view.message, /he preparado un borrador del diagnóstico/i);
-  assert.match(view.message, /revisa los campos/i);
-  assert.match(view.message, /privacidad no se marca automáticamente/i);
+  assert.match(view.message, /he dejado preparado un borrador del diagnóstico/i);
+  assert.match(view.message, /revisa lo que ya aparece rellenado/i);
+  assert.match(view.message, /casilla de privacidad queda sin marcar/i);
   assert.deepEqual(view.options.map((x) => x.label), ["👍 Sí", "😐 Más o menos", "👎 No"]);
   assert.equal(view.canBack, false);
   assert.equal(view.canHome, false);
@@ -215,7 +216,7 @@ test("CONV-G1.1 diagnostic handoff is terminal, preserves facts and exposes only
 test("CONV-G1.1 direct diagnostic does not pretend that fields were prefilled", () => {
   const handoff = goDiagnosticHandoffGuided(createGuidedState()).state;
   const view = getGuidedView(handoff);
-  assert.match(view.message, /Te he llevado al diagnóstico/i);
+  assert.match(view.message, /Te llevo al diagnóstico/i);
   assert.match(view.message, /completa el formulario/i);
   assert.doesNotMatch(view.message, /he preparado un borrador/i);
   assert.doesNotMatch(view.message, /^Perfecto\./i);
@@ -291,6 +292,95 @@ test("CONV-G1.2.1 header reset re-renders guided Home options without requiring 
   assert.match(resetSource, /guidedAppendAssistant/);
   assert.match(resetSource, /renderGuidedConversation\(\)/);
   assert.match(resetSource, /else\s*\{[\s\S]*renderConversationState/);
+});
+
+test("CONV-G1.5 home exposes an explicit branch about the guided assistant", () => {
+  const view = getGuidedView(createGuidedState());
+  const about = view.options.find((option) => option.id === "home-assistant");
+
+  assert.ok(about);
+  assert.equal(about.label, "Sobre este asistente");
+  assert.equal(about.next, "assistant.menu");
+});
+
+test("CONV-G1.5 assistant menu uses predefined questions instead of free text", () => {
+  let state = createGuidedState();
+  state = selectSingle(state, "home-assistant");
+  const view = getGuidedView(state);
+
+  assert.equal(view.id, "assistant.menu");
+  assert.deepEqual(
+    view.options.map((option) => option.label),
+    ["¿Cómo funciona?", "¿Usa IA o un LLM?", "¿Qué puede hacer?", "¿Es un agente de IA?"],
+  );
+});
+
+test("CONV-G1.5 guided assistant explains the guided flow in natural language", () => {
+  let state = createGuidedState();
+  state = selectSingle(state, "home-assistant");
+  state = selectSingle(state, "assistant-how");
+  const view = getGuidedView(state);
+
+  assert.equal(view.id, "assistant.how");
+  assert.match(view.message, /recorrido guiado/i);
+  assert.match(view.message, /tú eliges entre distintas opciones/i);
+  assert.match(view.message, /siguiente paso/i);
+  assert.doesNotMatch(view.message, /Conversation Graph|determinista|estado estructurado|handoff|runtime/i);
+});
+
+test("CONV-G1.5 guided assistant distinguishes itself from LLM and autonomous AI agents", () => {
+  let state = createGuidedState();
+  state = selectSingle(state, "home-assistant");
+
+  state = selectSingle(state, "assistant-llm");
+  let view = getGuidedView(state);
+  assert.match(view.message, /En esta conversación, no/i);
+  assert.match(view.message, /no genera respuestas con un LLM/i);
+  assert.match(view.message, /preparados de antemano/i);
+
+  state = goHomeGuided(state).state;
+  state = selectSingle(state, "home-assistant");
+  state = selectSingle(state, "assistant-agent");
+  view = getGuidedView(state);
+  assert.match(view.message, /^No\./i);
+  assert.match(view.message, /no toma decisiones ni actúa por su cuenta/i);
+});
+
+test("CONV-G1.6 public Guided copy avoids internal implementation jargon", () => {
+  const forbiddenMessageJargon = /Conversation Graph|estado estructurado|handoff|runtime|testeable|discovery/i;
+  for (const [nodeId, node] of Object.entries(GUIDED_GRAPH)) {
+    if (node.message?.startsWith?.("__DYNAMIC_")) continue;
+    assert.doesNotMatch(node.message ?? "", forbiddenMessageJargon, nodeId);
+  }
+});
+
+test("CONV-G1.6 assistant branch uses natural visitor-facing labels", () => {
+  const menu = getGuidedView({ ...createGuidedState(), currentNode: "assistant.menu" });
+  assert.match(menu.message, /curiosidad por saber cómo funciona/i);
+
+  const capabilities = getGuidedView({ ...createGuidedState(), currentNode: "assistant.capabilities" });
+  assert.deepEqual(capabilities.options.map((option) => option.label), ["Explorar mi caso", "Completar diagnóstico"]);
+
+  const agent = getGuidedView({ ...createGuidedState(), currentNode: "assistant.agent" });
+  assert.ok(agent.options.some((option) => option.label === "Experiencia con IA"));
+
+  const labels = Object.values(GUIDED_GRAPH).flatMap((node) => (node.options ?? []).map((option) => option.label));
+  assert.equal(labels.includes("Probar el discovery"), false);
+  assert.equal(labels.includes("IA de Víctor"), false);
+  assert.equal(labels.includes("IA / LLM"), false);
+});
+
+test("CONV-G1.6 process discovery sounds conversational without losing multi-select semantics", () => {
+  const areas = getGuidedView({ ...createGuidedState(), currentNode: "process.areas" });
+  assert.match(areas.message, /¿Qué te gustaría mejorar\?/i);
+  assert.match(areas.message, /marcar una o varias opciones/i);
+
+  const current = getGuidedView({ ...createGuidedState(), currentNode: "process.current" });
+  assert.match(current.message, /¿Cómo se hace hoy ese trabajo\?/i);
+  assert.doesNotMatch(current.message, /cuello de botella/i);
+
+  const pain = getGuidedView({ ...createGuidedState(), currentNode: "process.pain" });
+  assert.match(pain.message, /¿Qué te está dando más problemas\?/i);
 });
 
 test("CONV-G1 browser integration hides the free-text composer behind a reversible config flag", () => {
@@ -393,9 +483,9 @@ test("CONV-G1.2 renderer exposes universal diagnostic/contact shortcuts", () => 
 test("CONV-G1.3 top-level copy is natural and oriented to the visitor's intent", () => {
   const routes = [
     ["home-projects", "projects.menu", /algunos de los proyectos principales de Víctor/i, /qué problema resuelve/i],
-    ["home-services", "services.menu", /Si buscas una solución concreta/i, /encaja mejor con tu necesidad/i],
-    ["home-resources", "resources.menu", /Aquí puedes explorar DataVerso/i, /Power BI, Power Query, finanzas, inversión y aprendizaje/i],
-    ["home-contact", "contact.menu", /Si quieres dar el siguiente paso/i, /reservar una reunión inicial/i],
+    ["home-services", "services.menu", /Si tienes una necesidad concreta/i, /se parece más a tu caso/i],
+    ["home-resources", "resources.menu", /Si quieres seguir explorando/i, /Power BI, Power Query, finanzas, inversión y aprendizaje/i],
+    ["home-contact", "contact.menu", /Si quieres hablar con Víctor/i, /reservar una reunión inicial/i],
   ];
 
   for (const [optionId, nodeId, first, second] of routes) {
@@ -428,10 +518,10 @@ test("CONV-G1.3 resources expose only curated public content categories", () => 
 test("CONV-G1.3 guided cache-busting keeps bootstrap, renderer and core on the same release", () => {
   const bootstrap = fs.readFileSync(new URL("../chatbot.js", import.meta.url), "utf8");
   const renderer = fs.readFileSync(new URL("../ui/guided-conversation-renderer.js", import.meta.url), "utf8");
-  assert.match(bootstrap, /guided-conversation-renderer\.js\?v=conv-g1\.11/);
-  assert.match(bootstrap, /guided-conversation\.js\?v=conv-g1\.11/);
-  assert.match(bootstrap, /chatbot\.css\?v=conv-g1\.11/);
-  assert.match(renderer, /guided-conversation\.js\?v=conv-g1\.11/);
+  assert.match(bootstrap, /guided-conversation-renderer\.js\?v=conv-g1\.13/);
+  assert.match(bootstrap, /guided-conversation\.js\?v=conv-g1\.13/);
+  assert.match(bootstrap, /chatbot\.css\?v=conv-g1\.13/);
+  assert.match(renderer, /guided-conversation\.js\?v=conv-g1\.13/);
 });
 
 

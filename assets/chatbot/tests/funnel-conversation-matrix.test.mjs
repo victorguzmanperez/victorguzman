@@ -170,7 +170,7 @@ test('FUNNEL matrix: browser release cache bust reaches continuation hardening',
   const manager = await fs.readFile(new URL('../core/dialogue-manager.js', import.meta.url), 'utf8');
   const bootstrap = await fs.readFile(new URL('../chatbot.js', import.meta.url), 'utf8');
   assert.match(manager, /dialogue-continuation\.js\?v=final-qa\.3/);
-  assert.match(bootstrap, /dialogue-manager\.js\?v=conv-h3\.25\.1/);
+  assert.match(bootstrap, /dialogue-manager\.js\?v=conv-h3\.27/);
 });
 
 test('FUNNEL matrix: privacy detour does not erase an active discovery', () => {
