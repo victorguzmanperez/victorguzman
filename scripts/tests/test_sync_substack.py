@@ -1,4 +1,4 @@
-import importlib.util, unittest, json
+import importlib.util, unittest, json, tempfile
 from pathlib import Path
 spec=importlib.util.spec_from_file_location('sync',Path(__file__).parents[1]/'sync_substack.py')
 sync=importlib.util.module_from_spec(spec); spec.loader.exec_module(sync)
@@ -26,9 +26,22 @@ class SyncTests(unittest.TestCase):
     def test_production_path_rejected(self):
         with self.assertRaises(ValueError): sync.sync(feed(item()),sync.ROOT/'assets/chatbot/data/content/approved.json')
 
-    def test_repository_staged_file_validates_offline(self):
-        payload=sync.check_staged()
-        self.assertGreater(len(payload['articles']),0)
+    def test_explicit_staged_file_validates_offline(self):
+        article=sync.parse_feed(feed(item()))[0]
+        approved=sync.load_approved()
+        approved_by_id={entry['id']:entry for entry in approved.get('articles',[])}
+        article['change']=sync.expected_change(article,approved_by_id)
+        payload={
+            'schemaVersion':1,
+            'source':sync.FEED,
+            'promotion':'Manual review required. This file is not imported by the chatbot.',
+            'articles':[article],
+        }
+        with tempfile.TemporaryDirectory() as tempdir:
+            path=Path(tempdir)/'dataverso.json'
+            path.write_text(json.dumps(payload,ensure_ascii=False),encoding='utf-8')
+            validated=sync.check_staged(path)
+        self.assertEqual(len(validated['articles']),1)
 
     def test_staged_hash_tamper_is_rejected(self):
         article=sync.parse_feed(feed(item()))[0]
